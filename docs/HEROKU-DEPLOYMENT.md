@@ -158,7 +158,15 @@ https://your-ai-factory-app.herokuapp.com/health
 **Solutions**:
 1. Check the build logs: `heroku logs --tail`
 2. Verify package.json scripts are correct
-3. Ensure all dependencies are listed in package.json (not devDependencies for production)
+3. Ensure all build tools (like `vite`) are in `dependencies`, not `devDependencies`
+   - Heroku doesn't install devDependencies in production mode
+   - Build tools like Vite must be in dependencies to be available during build
+
+**Common Error**: `vite: not found`
+```bash
+# Solution: Vite and @vitejs/plugin-react are already in dependencies
+# This has been fixed in the repository
+```
 
 ### Application Crashes
 

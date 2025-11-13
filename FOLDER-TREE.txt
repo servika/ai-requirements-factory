@@ -1,0 +1,66 @@
+AI-factory/
+│
+├── 📄 index.js                              Main entry point
+├── 📄 package.json                          Project configuration
+├── 📄 .env.example                          Environment template
+├── 📄 .gitignore                           Git ignore rules
+│
+├── 📚 Documentation
+│   ├── 📄 README.md                         Main documentation
+│   ├── 📄 QUICK-START.md                   Quick setup guide
+│   ├── 📄 EXAMPLES.md                      Usage examples
+│   ├── 📄 ARCHITECTURE.md                  System architecture
+│   ├── 📄 PROJECT-STRUCTURE.md             Detailed structure guide
+│   └── 📄 MODULAR-STRUCTURE-SUMMARY.md     Refactoring summary
+│
+└── 📁 src/                                  Source code (modular)
+    │
+    ├── 📄 index.js                          Main exports
+    │
+    ├── 🤖 agents/                           AI Agent implementations
+    │   ├── 📄 base-agent.js                Base agent (Claude API)
+    │   └── 📄 index.js                     Module exports
+    │
+    ├── 💬 prompts/                          Agent prompt definitions
+    │   ├── 📄 business-analyst.js          Business Analyst prompt
+    │   ├── 📄 requirements-reviewer.js     Requirements Reviewer prompt
+    │   ├── 📄 technical-architect.js       Technical Architect prompt
+    │   ├── 📄 technical-designer.js        Technical Designer prompt
+    │   ├── 📄 testing-strategist.js        Testing Strategist prompt
+    │   └── 📄 index.js                     Module exports
+    │
+    ├── 🎭 orchestration/                    Wizard orchestration
+    │   ├── 📄 wizard.js                    Main wizard orchestrator
+    │   ├── 📄 wizard-state.js              State management
+    │   ├── 📄 wizard-steps.js              Step configuration
+    │   └── 📄 index.js                     Module exports
+    │
+    ├── ⚙️  config/                          Configuration
+    │   ├── 📄 constants.js                 Application constants
+    │   └── 📄 environment.js               Environment management
+    │
+    └── 🛠️  utils/                           Utility modules
+        ├── 📄 display.js                   Console display utilities
+        ├── 📄 file-manager.js              File I/O operations
+        ├── 📄 input-handler.js             User input handling
+        └── 📄 index.js                     Module exports
+
+📦 Generated at runtime:
+    └── 📁 output/                           Generated documentation
+        ├── 📄 1-businessAnalyst.md
+        ├── 📄 2-requirementsReviewer.md
+        ├── 📄 3-technicalArchitect.md
+        ├── 📄 4-technicalDesigner.md
+        ├── 📄 5-testingStrategist.md
+        └── 📄 COMPLETE-DOCUMENTATION.md
+
+Legend:
+  📁 Directory
+  📄 File
+  🤖 AI Agents
+  💬 Prompts
+  🎭 Orchestration
+  ⚙️  Configuration
+  🛠️  Utilities
+  📚 Documentation
+  📦 Generated

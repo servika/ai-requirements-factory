@@ -142,6 +142,11 @@ export function WizardProvider({ children }) {
       dispatch({ type: 'SET_CURRENT_STEP', payload: targetStep });
     });
 
+    newSocket.on('step:cleared', ({ step }) => {
+      console.log(`Clearing output for step: ${step}`);
+      dispatch({ type: 'SET_OUTPUT', payload: { step, output: null } });
+    });
+
     newSocket.on('step:completed', ({ step, output }) => {
       dispatch({ type: 'SET_OUTPUT', payload: { step, output } });
       dispatch({ type: 'SET_PROCESSING', payload: false });

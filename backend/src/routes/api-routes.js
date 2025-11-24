@@ -68,7 +68,9 @@ export function createApiRoutes(sessionManager, wizardService) {
       }
 
       const steps = wizardService.getAllSteps();
+      // Exclude Requirements Review from download
       const allOutputs = steps
+        .filter((step) => step.saveKey !== 'requirementsReview')
         .map((step) => {
           const output = session.outputs[step.saveKey];
           if (!output) return '';

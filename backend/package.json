@@ -1,13 +1,24 @@
 {
-  "name": "ai-factory-backend",
+  "name": "ai-requirements-factory-backend",
   "version": "1.0.0",
-  "description": "Backend API server for AI Factory wizard",
+  "description": "Backend API server for AI Requirements Factory wizard - Express + Socket.IO with Claude AI integration",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/servika/ai-requirements-factory.git",
+    "directory": "backend"
+  },
+  "bugs": {
+    "url": "https://github.com/servika/ai-requirements-factory/issues"
+  },
+  "homepage": "https://github.com/servika/ai-requirements-factory#readme",
+  "author": "Servika",
+  "license": "GPL-3.0",
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",

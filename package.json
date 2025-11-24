@@ -1,7 +1,7 @@
 {
-  "name": "AI-factory",
+  "name": "ai-requirements-factory",
   "version": "1.0.0",
-  "description": "AI Agent Wizard for Software Development Lifecycle",
+  "description": "AI Agent Wizard for Software Development Lifecycle - Transform system descriptions into comprehensive requirements, architecture, design, and testing documentation using Claude AI",
   "main": "index.js",
   "type": "module",
   "engines": {
@@ -19,6 +19,31 @@
     "start": "cd backend && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/servika/ai-requirements-factory.git"
+  },
+  "bugs": {
+    "url": "https://github.com/servika/ai-requirements-factory/issues"
+  },
+  "homepage": "https://github.com/servika/ai-requirements-factory#readme",
+  "keywords": [
+    "ai",
+    "claude",
+    "anthropic",
+    "sdlc",
+    "requirements",
+    "architecture",
+    "testing",
+    "technical-design",
+    "user-stories",
+    "software-development",
+    "code-generation",
+    "documentation",
+    "wizard"
+  ],
+  "author": "Servika",
+  "license": "GPL-3.0",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
     "chalk": "^5.3.0",
@@ -28,6 +53,5 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
-  },
-  "private": true
+  }
 }

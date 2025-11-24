@@ -65,8 +65,8 @@ Both modes use the same powerful AI agents to transform a high-level system desc
 
 ```bash
 # 1. Clone repository
-git clone <repository-url>
-cd AI-factory
+git clone https://github.com/servika/ai-requirements-factory.git
+cd ai-requirements-factory
 
 # 2. Install all dependencies
 npm run install:all
@@ -87,8 +87,8 @@ If you only want the command-line interface:
 
 ```bash
 # 1. Clone and navigate
-git clone <repository-url>
-cd AI-factory
+git clone https://github.com/servika/ai-requirements-factory.git
+cd ai-requirements-factory
 
 # 2. Install dependencies
 npm install
@@ -300,7 +300,7 @@ For detailed information about the modular architecture, see [docs/PROJECT-STRUC
 
 ### AI Model
 
-The wizard uses Claude Sonnet 4 by default, which provides:
+The wizard uses Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) by default, which provides:
 - Excellent reasoning and analysis capabilities
 - Strong technical knowledge
 - Consistent formatting and structure
@@ -357,21 +357,21 @@ The generated markdown files can be:
 
 ## Contributing
 
-Contributions are welcome! Areas for improvement:
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
+Areas for improvement:
 - Additional agent types (DevOps, Security, etc.)
 - Export formats (PDF, HTML, JSON)
-- Web interface
 - Integration with project management tools
 - Template library for common system types
 
 ## License
 
-[Your chosen license]
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
-For issues, questions, or suggestions, please [open an issue](your-repo-url/issues).
+For issues, questions, or suggestions, please [open an issue](https://github.com/servika/ai-requirements-factory/issues).
 
 ## Acknowledgments
 

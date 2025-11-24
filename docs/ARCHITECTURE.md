@@ -305,7 +305,7 @@ this.steps = [
 
 **Change Model:**
 - Set `CLAUDE_MODEL` environment variable
-- Options: `claude-sonnet-4-20250514`, `claude-opus-4-20250514`
+- Options: `claude-sonnet-4-5-20250929`, `claude-opus-4-20250514`, `claude-haiku-4-5-20251001`
 
 ## Performance Considerations
 

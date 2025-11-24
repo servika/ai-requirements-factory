@@ -1,7 +1,7 @@
 {
-  "name": "ai-factory-frontend",
+  "name": "ai-requirements-factory-frontend",
   "version": "1.0.0",
-  "description": "React frontend for AI Factory wizard",
+  "description": "React frontend for AI Requirements Factory wizard - Modern web interface with real-time updates",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,17 @@
     "preview": "vite preview",
     "lint": "eslint src --ext js,jsx"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/servika/ai-requirements-factory.git",
+    "directory": "frontend"
+  },
+  "bugs": {
+    "url": "https://github.com/servika/ai-requirements-factory/issues"
+  },
+  "homepage": "https://github.com/servika/ai-requirements-factory#readme",
+  "author": "Servika",
+  "license": "GPL-3.0",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

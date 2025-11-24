@@ -33,7 +33,9 @@ export default function WizardPage() {
   }, [state.systemDescription, navigate]);
 
   const handleDownloadAll = () => {
+    // Exclude Requirements Review from download
     const allOutputs = state.steps
+      .filter(step => step.id !== 'requirementsReviewer')
       .map((step, index) => {
         const output = state.outputs[step.id];
         if (!output) return '';

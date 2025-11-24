@@ -76,8 +76,17 @@ export class SocketController {
       // For Requirements Reviewer (step 1), apply feedback to Business Analyst (step 0)
       if (stepIndex === 1) {
         console.log(`   ↩️  Applying feedback to Step 1 (Business Analyst)`);
+
+        // Clear the Requirements Review output to avoid confusion
+        const sessionId = socket.data.sessionId;
+        this.sessionManager.saveStepOutput(sessionId, 'requirementsReview', null);
+
         // Notify frontend that we're navigating to step 0
         socket.emit('step:navigate', { targetStep: 0 });
+
+        // Clear the output on the frontend as well
+        socket.emit('step:cleared', { step: 'requirementsReview' });
+
         await this.executeStep(socket, 0, feedback);
       } else {
         // For other steps, regenerate the same step with feedback

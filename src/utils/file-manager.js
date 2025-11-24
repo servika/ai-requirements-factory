@@ -42,10 +42,10 @@ export class FileManager {
    * Generate complete documentation from all outputs
    */
   generateCompleteDocument(systemDescription, outputs) {
+    // Exclude Requirements Review from complete documentation
     const sections = [
       { title: 'System Description', content: systemDescription },
       { title: 'Requirements & User Stories', key: 'requirements' },
-      { title: 'Requirements Review', key: 'requirementsReview' },
       { title: 'Technical Architecture', key: 'architecture' },
       { title: 'Technical Design', key: 'technicalDesign' },
       { title: 'Testing Strategy', key: 'testingStrategy' }

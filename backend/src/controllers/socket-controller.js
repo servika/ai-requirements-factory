@@ -1,3 +1,5 @@
+import { sanitizeError } from '../../../src/config/constants.js';
+
 /**
  * Socket.IO event handlers
  */
@@ -28,7 +30,11 @@ export class SocketController {
         await this.executeStep(socket, 0, null);
       } catch (error) {
         console.error('Error starting wizard:', error);
-        socket.emit('error', { message: error.message });
+        const sanitizedMessage = sanitizeError(error, 'Failed to start wizard. Please try again.');
+        socket.emit('error', {
+          type: error.name || 'StartWizardError',
+          message: sanitizedMessage,
+        });
       }
     });
 
@@ -44,7 +50,10 @@ export class SocketController {
         const session = this.sessionManager.getSession(sessionId);
 
         if (!session) {
-          socket.emit('error', { message: 'Session not found' });
+          socket.emit('error', {
+            type: 'SessionNotFound',
+            message: 'Session not found',
+          });
           return;
         }
 
@@ -61,9 +70,11 @@ export class SocketController {
         }
       } catch (error) {
         console.error('Error accepting step:', error);
+        const sanitizedMessage = sanitizeError(error, 'Failed to accept step. Please try again.');
         socket.emit('step:error', {
           step: stepIndex,
-          error: error.message,
+          type: error.name || 'AcceptStepError',
+          error: sanitizedMessage,
         });
       }
     });
@@ -109,7 +120,10 @@ export class SocketController {
 
     if (!session) {
       console.error(`❌ Session not found: ${sessionId}`);
-      socket.emit('error', { message: 'Session not found' });
+      socket.emit('error', {
+        type: 'SessionNotFound',
+        message: 'Session not found',
+      });
       return;
     }
 
@@ -156,11 +170,16 @@ export class SocketController {
         output,
       });
     } catch (error) {
+      // Log full error details server-side for debugging
       console.error(`\n❌ Error executing Step ${stepIndex + 1}:`, error.message);
       console.error('Stack trace:', error.stack);
+
+      // Sanitize error message for client (error is already sanitized by wizard-service)
+      // But add additional context if needed
       socket.emit('step:error', {
         step: step.id,
-        error: error.message,
+        type: error.name || 'StepExecutionError',
+        error: error.message, // Already sanitized by wizard-service
       });
     }
   }

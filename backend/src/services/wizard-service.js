@@ -1,6 +1,6 @@
 import { BaseAgent } from '../../../src/agents/index.js';
 import { AGENT_PROMPTS } from '../../../src/prompts/index.js';
-import { CONFIG } from '../../../src/config/constants.js';
+import { CONFIG, sanitizeError } from '../../../src/config/constants.js';
 
 /**
  * Wizard service for executing agent steps
@@ -158,8 +158,17 @@ export class WizardService {
       console.log(`      ✨ Received response from Claude`);
       return output;
     } catch (error) {
+      // Log full error details for server-side debugging
       console.error(`      ❌ API Error:`, error.message);
-      throw new Error(`Failed to execute ${step.name}: ${error.message}`);
+      console.error(`      Stack trace:`, error.stack);
+
+      // Sanitize error message for client
+      const sanitizedMessage = sanitizeError(
+        error,
+        `Failed to execute ${step.name}. Please try again.`
+      );
+
+      throw new Error(sanitizedMessage);
     }
   }
 

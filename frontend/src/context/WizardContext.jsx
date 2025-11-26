@@ -34,6 +34,11 @@ const STEPS = [
     name: 'Task Planner & Implementation Plan',
     description: 'Prepare tasks for GenAI code generation',
   },
+  {
+    id: 'sdlcTaskAllocator',
+    name: 'SDLC Task Allocation',
+    description: 'Create role-specific tasks for SDLC experts',
+  },
 ];
 
 const initialState = {

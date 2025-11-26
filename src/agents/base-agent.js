@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { CONFIG } from '../config/constants.js';
+import { CONFIG, sanitizeError } from '../config/constants.js';
 
 /**
  * Base AI Agent class for interacting with Claude API
@@ -112,7 +112,12 @@ export class BaseAgent {
 
         return message.content[0].text;
       } catch (error) {
+        // Log full error details for server-side debugging
         console.error('Error executing agent:', error.message);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Stack trace:', error.stack);
+        }
+        // Preserve error properties for upstream sanitization
         throw error;
       }
     }, onRetry);
@@ -138,7 +143,12 @@ export class BaseAgent {
 
         return message.content[0].text;
       } catch (error) {
+        // Log full error details for server-side debugging
         console.error('Error executing agent with history:', error.message);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Stack trace:', error.stack);
+        }
+        // Preserve error properties for upstream sanitization
         throw error;
       }
     }, onRetry);

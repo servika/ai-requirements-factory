@@ -56,3 +56,35 @@ export const COLORS = {
   INFO: 'blue',
   MUTED: 'gray'
 };
+
+/**
+ * Sanitize error messages for production
+ * @param {Error} error - The error object
+ * @param {string} fallbackMessage - User-friendly fallback message for production
+ * @returns {string} - Sanitized error message
+ */
+export function sanitizeError(error, fallbackMessage = 'An error occurred. Please try again.') {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+
+  if (isDevelopment) {
+    // In development, show full error details for debugging
+    return error.message || error.toString();
+  }
+
+  // In production, show sanitized messages
+  // Only show specific error types that are safe for users
+  if (error.status === 429) {
+    return 'Too many requests. Please wait a moment and try again.';
+  }
+
+  if (error.status === 503 || error.status === 504) {
+    return 'Service temporarily unavailable. Please try again in a moment.';
+  }
+
+  if (error.isNetworkError || error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT') {
+    return 'Network connection error. Please check your connection and try again.';
+  }
+
+  // For all other errors, use the fallback message
+  return fallbackMessage;
+}

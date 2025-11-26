@@ -117,7 +117,7 @@ After completion, find these in `output/`:
 - Make sure you've set the API key using one of the three methods above
 
 **Long wait times**
-- This is normal, complex outputs take 30-60 seconds
+- This is normal, complex outputs take 90-120 seconds
 - Check your internet connection
 
 **Want to start over?**

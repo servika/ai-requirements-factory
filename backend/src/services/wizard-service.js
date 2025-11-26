@@ -132,8 +132,12 @@ export class WizardService {
 
   /**
    * Execute a step
+   * @param {number} stepIndex - Index of the step to execute
+   * @param {Object} session - Session data
+   * @param {string} feedback - Optional feedback for revision
+   * @param {Function} onRetry - Optional callback when retry occurs (attempt, error, delay)
    */
-  async executeStep(stepIndex, session, feedback = null) {
+  async executeStep(stepIndex, session, feedback = null, onRetry = null) {
     const step = this.steps[stepIndex];
     const input = this.getStepInput(stepIndex, session);
     const userPrompt = step.prompt.getUserPrompt(input, feedback);
@@ -147,7 +151,8 @@ export class WizardService {
       const output = await this.agent.execute(
         step.prompt.systemPrompt,
         userPrompt,
-        CONFIG.MAX_TOKENS.COMPLEX
+        CONFIG.MAX_TOKENS.COMPLEX,
+        onRetry
       );
 
       console.log(`      ✨ Received response from Claude`);

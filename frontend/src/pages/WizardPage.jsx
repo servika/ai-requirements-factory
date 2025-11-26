@@ -120,6 +120,20 @@ export default function WizardPage() {
               </Alert>
             )}
 
+            {state.retryState.isRetrying && (
+              <Alert severity="warning" sx={{ mb: 3 }}>
+                <Typography variant="body1" gutterBottom>
+                  Retrying API request (Attempt {state.retryState.attempt})
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Previous error: {state.retryState.error}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Waiting {(state.retryState.delay / 1000).toFixed(1)}s before retry...
+                </Typography>
+              </Alert>
+            )}
+
             {isComplete && (
               <Alert severity="success" sx={{ mb: 3 }}>
                 <Typography variant="h6" gutterBottom>

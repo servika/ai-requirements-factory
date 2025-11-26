@@ -11,6 +11,16 @@ export const CONFIG = {
     EXTENDED: 64000
   },
 
+  // Retry configuration
+  RETRY: {
+    MAX_ATTEMPTS: 3,
+    INITIAL_DELAY: 1000, // 1 second
+    MAX_DELAY: 30000, // 30 seconds
+    BACKOFF_MULTIPLIER: 2,
+    RETRYABLE_ERRORS: [429, 500, 502, 503, 504], // HTTP status codes
+    RETRYABLE_ERROR_MESSAGES: ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'ECONNREFUSED']
+  },
+
   // Output configuration
   OUTPUT_DIR: 'output',
   COMPLETE_DOC_FILENAME: 'COMPLETE-DOCUMENTATION.md',

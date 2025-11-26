@@ -8,6 +8,7 @@ import { technicalArchitectPrompt } from './technical-architect.js';
 import { technicalDesignerPrompt } from './technical-designer.js';
 import { testingStrategistPrompt } from './testing-strategist.js';
 import { taskPlannerPrompt } from './task-planner.js';
+import * as sdlcTaskAllocator from './sdlc-task-allocator.js';
 
 export const AGENT_PROMPTS = {
   businessAnalyst: businessAnalystPrompt,
@@ -15,7 +16,8 @@ export const AGENT_PROMPTS = {
   technicalArchitect: technicalArchitectPrompt,
   technicalDesigner: technicalDesignerPrompt,
   testingStrategist: testingStrategistPrompt,
-  taskPlanner: taskPlannerPrompt
+  taskPlanner: taskPlannerPrompt,
+  sdlcTaskAllocator: sdlcTaskAllocator
 };
 
 export {
@@ -24,5 +26,6 @@ export {
   technicalArchitectPrompt,
   technicalDesignerPrompt,
   testingStrategistPrompt,
-  taskPlannerPrompt
+  taskPlannerPrompt,
+  sdlcTaskAllocator
 };

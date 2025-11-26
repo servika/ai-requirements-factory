@@ -48,7 +48,9 @@ export class FileManager {
       { title: 'Requirements & User Stories', key: 'requirements' },
       { title: 'Technical Architecture', key: 'architecture' },
       { title: 'Technical Design', key: 'technicalDesign' },
-      { title: 'Testing Strategy', key: 'testingStrategy' }
+      { title: 'Testing Strategy', key: 'testingStrategy' },
+      { title: 'Task Planner & Implementation Plan', key: 'taskPlanner' },
+      { title: 'SDLC Task Allocation', key: 'sdlcTaskAllocation' }
     ];
 
     let completeDoc = '# Software Development Lifecycle Documentation\n\n';

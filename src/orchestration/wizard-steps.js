@@ -39,6 +39,39 @@ export function createWizardSteps(state) {
       prompt: AGENT_PROMPTS.testingStrategist,
       getInput: () => state.getOutput('technicalDesign'),
       saveKey: 'testingStrategy'
+    },
+    {
+      id: 'taskPlanner',
+      name: 'Task Planner & Implementation Plan',
+      prompt: AGENT_PROMPTS.taskPlanner,
+      getInput: () => (
+        '=== REQUIREMENTS & USER STORIES ===\n\n' +
+        (state.getOutput('requirements') || '') +
+        '\n\n=== REQUIREMENTS REVIEW ===\n\n' +
+        (state.getOutput('requirementsReview') || '') +
+        '\n\n=== TECHNICAL ARCHITECTURE & STACK ===\n\n' +
+        (state.getOutput('architecture') || '') +
+        '\n\n=== TECHNICAL DESIGN & API SPECIFICATION ===\n\n' +
+        (state.getOutput('technicalDesign') || '') +
+        '\n\n=== TESTING STRATEGY ===\n\n' +
+        (state.getOutput('testingStrategy') || '')
+      ),
+      saveKey: 'taskPlanner'
+    },
+    {
+      id: 'sdlcTaskAllocator',
+      name: 'SDLC Task Allocation',
+      prompt: AGENT_PROMPTS.sdlcTaskAllocator,
+      getInput: () => ({
+        systemDescription: state.getSystemDescription(),
+        requirements: state.getOutput('requirements') || '',
+        requirementsReview: state.getOutput('requirementsReview') || '',
+        architecture: state.getOutput('architecture') || '',
+        technicalDesign: state.getOutput('technicalDesign') || '',
+        testingStrategy: state.getOutput('testingStrategy') || '',
+        taskPlanner: state.getOutput('taskPlanner') || ''
+      }),
+      saveKey: 'sdlcTaskAllocation'
     }
   ];
 }

@@ -45,6 +45,12 @@ export class WizardService {
         prompt: AGENT_PROMPTS.taskPlanner,
         saveKey: 'taskPlanner',
       },
+      {
+        id: 'sdlcTaskAllocator',
+        name: 'SDLC Task Allocation',
+        prompt: AGENT_PROMPTS.sdlcTaskAllocator,
+        saveKey: 'sdlcTaskAllocation',
+      },
     ];
   }
 
@@ -106,6 +112,18 @@ export class WizardService {
           '\n\n=== TESTING STRATEGY ===\n\n' +
           (session.outputs.testingStrategy || '')
         );
+
+      case 'sdlcTaskAllocator':
+        // SDLC Task Allocator needs ALL outputs to create role-specific tasks
+        return {
+          systemDescription: session.systemDescription,
+          requirements: session.outputs.requirements || '',
+          requirementsReview: session.outputs.requirementsReview || '',
+          architecture: session.outputs.architecture || '',
+          technicalDesign: session.outputs.technicalDesign || '',
+          testingStrategy: session.outputs.testingStrategy || '',
+          taskPlanner: session.outputs.taskPlanner || ''
+        };
 
       default:
         return '';

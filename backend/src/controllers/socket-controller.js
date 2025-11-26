@@ -127,10 +127,22 @@ export class SocketController {
       console.log(`   🤖 Calling AI agent...`);
       const startTime = Date.now();
 
+      // Create retry callback to emit retry events to frontend
+      const onRetry = async (attempt, error, delay) => {
+        console.log(`   🔄 Retry ${attempt} after ${delay}ms: ${error.message}`);
+        socket.emit('step:retrying', {
+          step: step.id,
+          attempt,
+          error: error.message,
+          delay,
+        });
+      };
+
       const output = await this.wizardService.executeStep(
         stepIndex,
         session,
-        feedback
+        feedback,
+        onRetry
       );
 
       const duration = ((Date.now() - startTime) / 1000).toFixed(2);

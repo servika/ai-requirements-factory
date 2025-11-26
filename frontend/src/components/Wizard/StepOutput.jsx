@@ -66,7 +66,7 @@ export default function StepOutput({ stepIndex }) {
             {step.name} is working...
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            This may take 30-60 seconds
+            This may take 90-120 seconds
           </Typography>
         </Paper>
       );
@@ -99,7 +99,7 @@ export default function StepOutput({ stepIndex }) {
             {step.name} is working...
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Processing your request, this may take 30-60 seconds
+            Processing your request, this may take 90-120 seconds
           </Typography>
         </Box>
       )}

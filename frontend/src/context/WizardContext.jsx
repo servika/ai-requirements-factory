@@ -51,6 +51,12 @@ const initialState = {
   isConnected: false,
   error: null,
   history: [],
+  retryState: {
+    isRetrying: false,
+    attempt: 0,
+    error: null,
+    delay: 0,
+  },
 };
 
 function wizardReducer(state, action) {
@@ -80,7 +86,39 @@ function wizardReducer(state, action) {
       return { ...state, isConnected: action.payload };
 
     case 'SET_ERROR':
-      return { ...state, error: action.payload, isProcessing: false };
+      return {
+        ...state,
+        error: action.payload,
+        isProcessing: false,
+        retryState: {
+          isRetrying: false,
+          attempt: 0,
+          error: null,
+          delay: 0,
+        },
+      };
+
+    case 'SET_RETRY_STATE':
+      return {
+        ...state,
+        retryState: {
+          isRetrying: true,
+          attempt: action.payload.attempt,
+          error: action.payload.error,
+          delay: action.payload.delay,
+        },
+      };
+
+    case 'CLEAR_RETRY_STATE':
+      return {
+        ...state,
+        retryState: {
+          isRetrying: false,
+          attempt: 0,
+          error: null,
+          delay: 0,
+        },
+      };
 
     case 'ADD_TO_HISTORY':
       return {
@@ -152,9 +190,22 @@ export function WizardProvider({ children }) {
       dispatch({ type: 'SET_OUTPUT', payload: { step, output: null } });
     });
 
+    newSocket.on('step:retrying', ({ step, attempt, error, delay }) => {
+      console.log(`Retrying step ${step}, attempt ${attempt}`);
+      dispatch({
+        type: 'SET_RETRY_STATE',
+        payload: { attempt, error, delay },
+      });
+      dispatch({
+        type: 'ADD_TO_HISTORY',
+        payload: { type: 'retry', step, attempt, error, delay, timestamp: new Date() },
+      });
+    });
+
     newSocket.on('step:completed', ({ step, output }) => {
       dispatch({ type: 'SET_OUTPUT', payload: { step, output } });
       dispatch({ type: 'SET_PROCESSING', payload: false });
+      dispatch({ type: 'CLEAR_RETRY_STATE' });
       dispatch({
         type: 'ADD_TO_HISTORY',
         payload: { type: 'step_completed', step, timestamp: new Date() },

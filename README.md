@@ -323,7 +323,7 @@ Ensure you've set your API key using one of the three methods described in Insta
 If you encounter rate limits, the wizard will display an error. Wait a moment and try again.
 
 ### Long Response Times
-Some stages (especially Technical Design) may take 30-60 seconds due to the complexity of the output.
+Some stages (especially Technical Design) may take 90-120 seconds due to the complexity of the output.
 
 ### Output Not Showing
 If terminal output seems truncated, try:

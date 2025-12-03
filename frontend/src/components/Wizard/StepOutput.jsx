@@ -22,6 +22,7 @@ import {
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useWizard } from '../../context/WizardContext';
+import RequirementsReviewOutput from './RequirementsReviewOutput';
 
 export default function StepOutput({ stepIndex }) {
   const { state, actions } = useWizard();
@@ -134,32 +135,36 @@ export default function StepOutput({ stepIndex }) {
       {/* Content */}
       <Collapse in={expanded}>
         <Box sx={{ p: 3 }}>
-          {/* Output */}
-          <Box
-            sx={{
-              maxHeight: 500,
-              overflow: 'auto',
-              bgcolor: 'grey.50',
-              p: 2,
-              borderRadius: 1,
-              mb: 2,
-              '& pre': {
-                bgcolor: 'grey.200',
-                p: 1,
-                borderRadius: 1,
+          {/* Output - Use specialized component for Requirements Review */}
+          {step.id === 'requirementsReviewer' ? (
+            <RequirementsReviewOutput output={output} />
+          ) : (
+            <Box
+              sx={{
+                maxHeight: 500,
                 overflow: 'auto',
-              },
-              '& code': {
-                bgcolor: 'grey.200',
-                px: 0.5,
-                borderRadius: 0.5,
-              },
-            }}
-          >
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {output}
-            </ReactMarkdown>
-          </Box>
+                bgcolor: 'grey.50',
+                p: 2,
+                borderRadius: 1,
+                mb: 2,
+                '& pre': {
+                  bgcolor: 'grey.200',
+                  p: 1,
+                  borderRadius: 1,
+                  overflow: 'auto',
+                },
+                '& code': {
+                  bgcolor: 'grey.200',
+                  px: 0.5,
+                  borderRadius: 0.5,
+                },
+              }}
+            >
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {output}
+              </ReactMarkdown>
+            </Box>
+          )}
 
           {/* Actions */}
           {state.currentStep === stepIndex && !state.isProcessing && (

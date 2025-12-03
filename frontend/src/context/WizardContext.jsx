@@ -39,6 +39,11 @@ const STEPS = [
     name: 'SDLC Task Allocation',
     description: 'Create role-specific tasks for SDLC experts',
   },
+  {
+    id: 'agentTaskGenerator',
+    name: 'Agent Task Generation',
+    description: 'Generate detailed AI agent tasks from SDLC allocation',
+  },
 ];
 
 const initialState = {

@@ -207,3 +207,18 @@ Remember:
 - Prioritize tasks based on business value and technical dependencies
 - Enable maximum parallelization where possible`;
 }
+
+export const sdlcTaskAllocatorPrompt = {
+  systemPrompt,
+  getUserPrompt,
+
+  /**
+   * Prepare SDLC allocation output for Agent Task Generator
+   */
+  prepareForAgentTaskGenerator: (allocation) => {
+    return allocation;
+  }
+};
+
+// Default export for backward compatibility
+export default sdlcTaskAllocatorPrompt;

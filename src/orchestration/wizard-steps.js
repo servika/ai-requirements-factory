@@ -72,6 +72,13 @@ export function createWizardSteps(state) {
         taskPlanner: state.getOutput('taskPlanner') || ''
       }),
       saveKey: 'sdlcTaskAllocation'
+    },
+    {
+      id: 'agentTaskGenerator',
+      name: 'Agent Task Generation',
+      prompt: AGENT_PROMPTS.agentTaskGenerator,
+      getInput: () => state.getOutput('sdlcTaskAllocation') || '',
+      saveKey: 'agentTasks'
     }
   ];
 }

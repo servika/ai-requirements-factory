@@ -51,6 +51,12 @@ export class WizardService {
         prompt: AGENT_PROMPTS.sdlcTaskAllocator,
         saveKey: 'sdlcTaskAllocation',
       },
+      {
+        id: 'agentTaskGenerator',
+        name: 'Agent Task Generation',
+        prompt: AGENT_PROMPTS.agentTaskGenerator,
+        saveKey: 'agentTasks',
+      },
     ];
   }
 
@@ -124,6 +130,10 @@ export class WizardService {
           testingStrategy: session.outputs.testingStrategy || '',
           taskPlanner: session.outputs.taskPlanner || ''
         };
+
+      case 'agentTaskGenerator':
+        // Agent Task Generator needs SDLC allocation to create detailed AI agent tasks
+        return session.outputs.sdlcTaskAllocation || '';
 
       default:
         return '';

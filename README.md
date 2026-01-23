@@ -1,6 +1,6 @@
 # AI Factory - AI Agent Wizard for Software Development
 
-A sophisticated multi-agent system that guides you through the complete Software Development Lifecycle (SDLC) using specialized AI agents powered by Claude.
+A sophisticated multi-agent system that guides you through the complete Software Development Lifecycle (SDLC) using specialized AI agents powered by Claude. Transform a high-level system description into comprehensive implementation plans with AI-generated requirements, architecture, design, testing strategy, and executable development tasks.
 
 ## Overview
 
@@ -9,55 +9,92 @@ AI Factory is available in two modes:
 1. **Web Application** (React + Express) - Modern web interface with real-time updates
 2. **CLI Tool** (Terminal) - Command-line interface for terminal users
 
-Both modes use the same powerful AI agents to transform a high-level system description into comprehensive documentation covering requirements, architecture, design, and testing strategy.
+Both modes use the same powerful AI agents to transform a high-level system description into comprehensive documentation covering requirements, architecture, design, testing strategy, task planning, and AI-ready work packages.
 
 ## Features
 
-- **Multi-Stage Wizard**: Guides you through 6 distinct phases of software planning
-- **Specialized AI Agents**: Each agent is an expert in their specific role
+- **8-Stage AI Pipeline**: Comprehensive SDLC coverage from idea to implementation plan
+- **Specialized AI Agents**: Each agent is an expert applying industry best practices
+- **Auto-Review**: Automatic requirements review and improvement (no manual intervention)
 - **Interactive Review**: Review and iterate on each stage before proceeding
+- **Industry Standards**: Prompts based on BABOK, Wiegers, SEI practices
+- **Full Traceability**: Business objectives → User stories → Tasks → AI prompts
 - **Loading Indicators**: Real-time visual feedback with spinners for all requests
-- **Smart Feedback Navigation**: Automatically navigates to the correct step when applying feedback
 - **Comprehensive Documentation**: Generates detailed documentation at each stage
-- **Automatic Saving**: All outputs are saved to individual files and a complete document
+- **Automatic Saving**: All outputs saved to individual files and complete document
 
-## The Six Stages
+## The Eight Stages
 
-### 1. Business Analyst & Requirements Manager
-- Analyzes your system description
-- Creates detailed user stories in standard format
-- Includes acceptance criteria, priorities, and complexity estimates
-- Considers functional and non-functional requirements
+### Stage 1: Business Analyst & Requirements Manager
+*Based on BABOK v3, Karl Wiegers' Software Requirements*
+- Structured 3-phase methodology (Analysis, Elicitation, Documentation)
+- Stakeholder analysis with personas and power/interest grid
+- User stories with INVEST criteria and Given-When-Then acceptance criteria
+- NFRs: Performance, Scalability, Security, Reliability, Usability, Compliance
+- Requirements traceability matrix
+- Wiegers' 8 Quality Attributes validation
 
-### 2. Requirements Reviewer
-- Reviews the initial requirements for completeness
-- Identifies gaps and missing requirements
-- Suggests additional user stories
-- Validates testability of acceptance criteria
+### Stage 2: Requirements Reviewer (Automatic)
+*Auto-review with one iteration - no user interaction needed*
+- Reviews requirements against Wiegers quality attributes
+- Validates INVEST criteria for user stories
+- Gap analysis (functional, NFR, security, stakeholder)
+- Ambiguity detection with specific corrections
+- **Automatically feeds review back to Stage 1 for improvement**
 
-### 3. Technical Architect
-- Designs system architecture
-- Creates C4 diagrams (System Context and Container)
-- Recommends technology stack for frontend and backend
-- Documents architectural decisions and rationale
+### Stage 3: Technical Architect
+*Based on SEI practices: ATAM, ADD, Views & Beyond*
+- Quality Attribute Utility Tree (ATAM method)
+- Architectural patterns and tactics with explicit tradeoffs
+- C4 diagrams (Context, Container, Component, Deployment)
+- Technology selection matrix with quality attribute analysis
+- Architecture Decision Records (ADRs)
+- Sensitivity points, tradeoff points, and risks
 
-### 4. Technical Designer
-- Designs frontend component structure
-- Defines complete API specifications
-- Creates data models and ERD diagrams
-- Designs error handling strategy
+### Stage 4: Technical Designer
+*Design-level tradeoff analysis*
+- Frontend component architecture with state management
+- REST/GraphQL API specifications with full contracts
+- Data model with ERD, schema, migrations
+- Error handling strategy and taxonomy
+- Design patterns with rationale
+- Security design (auth flow, authorization model)
 
-### 5. Testing Strategist
-- Defines comprehensive testing strategy
-- Covers unit, integration, E2E, and visual testing
-- Identifies performance testing requirements
-- Recommends testing tools and frameworks
+### Stage 5: Testing Strategist
+*Strategic vision for quality assurance*
+- Quality vision aligned with business objectives
+- Risk-based testing approach with effort allocation
+- Test pyramid strategy (70/20/10) with rationale
+- Testing by level: Unit, Integration, E2E, Visual, Performance, Security
+- Automation ROI analysis and decision matrix
+- CI/CD quality gates and maturity roadmap
 
-### 6. Task Planner & Implementation Plan
-- Breaks down the project into actionable tasks
-- Prepares tasks for GenAI code generation
-- Creates implementation roadmap
-- Prioritizes development phases
+### Stage 6: Task Planner & Implementation Roadmap
+*Project management best practices*
+- Requirements traceability (BO → US → Task)
+- Work Breakdown Structure (WBS) with 100% rule
+- MVP scope definition with must-have vs nice-to-have
+- Critical path analysis with dependency graph
+- Story point estimation framework
+- GenAI implementation prompts per task
+
+### Stage 7: SDLC Task Allocator
+*Role-based work distribution*
+- Team structure with 9 SDLC roles
+- RACI matrix (Responsible, Accountable, Consulted, Informed)
+- Tasks per role with skills, context, deliverables
+- Handoff protocols with validation gates
+- Workload distribution and bottleneck analysis
+- Parallel workstreams with coordination points
+
+### Stage 8: Agent Task Generator
+*AI-ready work packages*
+- AI agent personas with tool recommendations
+- Execution phases with human review gates
+- Optimized prompts with context management
+- Verification checklists per task
+- Prompt engineering guidelines
+- Quality assurance checkpoints
 
 ## Installation
 
@@ -135,22 +172,23 @@ npm run cli
 
 ### Workflow
 
-1. **Provide System Description**: When prompted, enter a high-level description of the system you want to build.
+1. **Provide System Description**: Enter a high-level description of the system you want to build.
 
-2. **Review Each Stage**: After each agent completes its work, you'll see:
-   - The agent's output displayed in the terminal
-   - The output saved to a file in the `output/` directory
+2. **Stage 1 - Requirements**: Business Analyst generates comprehensive requirements
+   - Review output and Accept/Revise/Quit
 
-3. **Make Your Decision**: For each stage, you have three options:
+3. **Stage 2 - Auto-Review**: Requirements Reviewer automatically reviews and improves requirements
+   - **No user interaction needed** - runs automatically
+   - Reviews are fed back to regenerate improved requirements
+
+4. **Stages 3-8**: For each subsequent stage, you can:
    - **Accept (1)**: Continue to the next stage
-   - **Request Changes (2)**: Provide feedback and have the agent regenerate
-   - **Quit (3)**: Exit the wizard (progress is saved)
+   - **Request Changes (2)**: Provide feedback for regeneration
+   - **Quit (3)**: Exit (progress is saved)
 
-4. **Iterate as Needed**: If you request changes, provide specific feedback, and the agent will refine its output.
-
-5. **Complete**: When all stages are finished, you'll have:
+5. **Complete**: When finished, you'll have:
    - Individual files for each stage in `output/`
-   - A complete documentation file: `COMPLETE-DOCUMENTATION.md`
+   - Complete documentation: `COMPLETE-DOCUMENTATION.md`
 
 ## Example System Descriptions
 
@@ -188,12 +226,77 @@ After running the wizard, you'll find the following files in the `output/` direc
 ```
 output/
 ├── 1-businessAnalyst.md          # User stories and requirements
-├── 2-requirementsReviewer.md     # Requirements review and gaps
-├── 3-technicalArchitect.md       # Architecture and tech stack
-├── 4-technicalDesigner.md        # Component and API design
-├── 5-testingStrategist.md        # Testing strategy
-├── 6-taskPlanner.md              # Task breakdown and implementation plan
+├── 2-requirementsReviewer.md     # Requirements review (auto-generated)
+├── 3-technicalArchitect.md       # Architecture, C4 diagrams, ADRs
+├── 4-technicalDesigner.md        # Component design, API specs, data models
+├── 5-testingStrategist.md        # Testing strategy and quality gates
+├── 6-taskPlanner.md              # WBS, critical path, task breakdown
+├── 7-sdlcTaskAllocator.md        # Role-based task allocation, RACI
+├── 8-agentTaskGenerator.md       # AI agent work packages
 └── COMPLETE-DOCUMENTATION.md     # All stages combined
+```
+
+## Data Flow
+
+```
+User Input: "Build a task management app..."
+     │
+     ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 1: Business Analyst                                   │
+│  → Requirements, User Stories, NFRs                         │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 2: Auto-Review (No user interaction)                  │
+│  → Review → Feedback → Improved Requirements                │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 3: Technical Architect                                │
+│  Input: Requirements + Review                               │
+│  → Architecture, C4 Diagrams, Tech Stack, ADRs              │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 4: Technical Designer                                 │
+│  Input: Requirements + Review + Architecture                │
+│  → Components, APIs, Data Models, Error Handling            │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 5: Testing Strategist                                 │
+│  Input: Requirements + Architecture + Design                │
+│  → Test Strategy, Quality Gates, Automation Plan            │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 6: Task Planner                                       │
+│  Input: ALL previous outputs                                │
+│  → WBS, Critical Path, MVP Scope, Task Breakdown            │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 7: SDLC Task Allocator                                │
+│  Input: ALL previous outputs                                │
+│  → Role Tasks, RACI Matrix, Handoffs, Workload              │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Stage 8: Agent Task Generator                               │
+│  Input: Architecture + Design + Allocation                  │
+│  → AI Prompts, Verification Checklists, Review Gates        │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+                 Implementation-Ready Plan
 ```
 
 ## Configuration
@@ -201,26 +304,32 @@ output/
 ### Environment Variables
 
 - `ANTHROPIC_API_KEY`: Your Anthropic API key (required)
-- `CLAUDE_MODEL`: Claude model to use (default: reads from .env or `claude-sonnet-4-5-20250929`)
+- `CLAUDE_MODEL`: Claude model to use (default: `claude-sonnet-4-5-20250929`)
 - `PORT`: Backend server port (default: `3000`)
 - `NODE_ENV`: Environment mode (default: `development`)
 - `FRONTEND_URL`: Frontend URL for CORS (default: `http://localhost:3001`)
 
 ### Customizing Prompts
 
-Agent prompts can be customized in individual files under `src/prompts/`. Each agent prompt has:
-- `systemPrompt`: Defines the agent's role and behavior
+Agent prompts are in `src/prompts/`. Each prompt has:
+- `systemPrompt`: Agent's role, methodology, and output format
 - `getUserPrompt()`: Constructs the user message based on context
 
-Example: Edit `src/prompts/business-analyst.js` to modify requirements gathering behavior.
+**Prompt files:**
+- `01-business-analyst.js` - Requirements (BABOK, Wiegers methodology)
+- `02-requirements-reviewer.js` - Review (Wiegers quality attributes)
+- `03-technical-architect.js` - Architecture (SEI ATAM, ADD practices)
+- `04-technical-designer.js` - Design (API contracts, data models)
+- `05-testing-strategist.js` - Testing (risk-based, test pyramid)
+- `06-task-planner.js` - Planning (WBS, critical path)
+- `07-sdlc-task-allocator.js` - Allocation (RACI, handoffs)
+- `08-agent-task-generator.js` - AI Tasks (prompt engineering)
 
 ### Adjusting Model Parameters
 
-In `src/config/constants.js`, you can modify:
-- `MAX_TOKENS`: Maximum response length (SIMPLE: 4096, COMPLEX: 8192, EXTENDED: 16384)
-- `DEFAULT_MODEL`: The Claude model to use
-
-In `src/agents/base-agent.js`, you can modify API call behavior.
+In `src/config/constants.js`:
+- `MAX_TOKENS`: Response length (SIMPLE: 4096, COMPLEX: 8192, EXTENDED: 16384)
+- `DEFAULT_MODEL`: Claude model to use
 
 ## Project Structure
 
@@ -229,33 +338,26 @@ AI-factory/
 ├── index.js                              # CLI entry point
 ├── package.json                          # Root dependencies and scripts
 ├── .env                                  # Environment variables (create this)
-├── README.md                             # Main documentation
 │
-├── docs/                                 # Documentation files
-│   ├── QUICK-START.md                   # Quick start guide
-│   ├── WEB-APP-SETUP.md                 # Web app setup
-│   ├── ARCHITECTURE.md                  # Architecture docs
-│   └── ...                              # Other documentation
-│
-├── src/                                  # Shared core library (used by CLI & backend)
+├── src/                                  # Shared core library
 │   ├── agents/                          # AI Agent implementations
-│   │   ├── base-agent.js                # Claude API integration
-│   │   └── index.js                     # Exports
+│   │   └── base-agent.js                # Claude API integration
 │   │
-│   ├── prompts/                         # Agent prompt definitions
-│   │   ├── business-analyst.js          # Business Analyst prompt
-│   │   ├── requirements-reviewer.js     # Requirements Reviewer prompt
-│   │   ├── technical-architect.js       # Technical Architect prompt
-│   │   ├── technical-designer.js        # Technical Designer prompt
-│   │   ├── testing-strategist.js        # Testing Strategist prompt
-│   │   ├── task-planner.js              # Task Planner prompt
+│   ├── prompts/                         # Agent prompt definitions (8 agents)
+│   │   ├── 01-business-analyst.js       # Requirements (BABOK methodology)
+│   │   ├── 02-requirements-reviewer.js  # Review (auto-feedback)
+│   │   ├── 03-technical-architect.js    # Architecture (SEI practices)
+│   │   ├── 04-technical-designer.js     # Design (APIs, data models)
+│   │   ├── 05-testing-strategist.js     # Testing (risk-based strategy)
+│   │   ├── 06-task-planner.js           # Planning (WBS, MVP)
+│   │   ├── 07-sdlc-task-allocator.js    # Allocation (RACI, roles)
+│   │   ├── 08-agent-task-generator.js   # AI tasks (prompts)
 │   │   └── index.js                     # Exports
 │   │
 │   ├── orchestration/                   # Wizard orchestration
-│   │   ├── wizard.js                    # Main orchestrator (CLI)
+│   │   ├── wizard.js                    # Main orchestrator + auto-review
 │   │   ├── wizard-state.js              # State management
-│   │   ├── wizard-steps.js              # Step configuration
-│   │   └── index.js                     # Exports
+│   │   └── wizard-steps.js              # Step configuration
 │   │
 │   ├── config/                          # Configuration
 │   │   ├── constants.js                 # App constants
@@ -264,29 +366,30 @@ AI-factory/
 │   └── utils/                           # Utilities
 │       ├── display.js                   # Console display
 │       ├── file-manager.js              # File operations
-│       ├── input-handler.js             # User input
-│       └── index.js                     # Exports
+│       └── input-handler.js             # User input
 │
 ├── frontend/                             # React web application
-│   ├── src/
-│   │   ├── components/                  # React components
-│   │   ├── pages/                       # Page components
-│   │   ├── context/                     # React Context (state)
-│   │   └── ...                          # Other frontend code
-│   └── package.json                     # Frontend dependencies
+│   └── src/
+│       ├── components/                  # React components
+│       ├── pages/                       # Page components
+│       └── context/                     # React Context (state)
 │
-└── backend/                              # Express API server
-    ├── src/
-    │   ├── controllers/                 # Socket controllers
-    │   ├── routes/                      # REST API routes
-    │   ├── services/                    # Business logic
-    │   │   ├── wizard-service.js        # Uses shared core (../../../src/)
-    │   │   └── session-manager.js       # Session management
-    │   └── server.js                    # Server entry point
-    └── package.json                     # Backend dependencies
+├── backend/                              # Express API server
+│   └── src/
+│       ├── controllers/                 # Socket controllers
+│       ├── routes/                      # REST API routes
+│       └── services/                    # Business logic
+│
+├── test/                                 # Unit tests
+│   ├── wizard-steps.test.js             # Step configuration tests
+│   ├── wizard-state.test.js             # State management tests
+│   └── ...                              # Other tests
+│
+└── docs/                                 # Documentation
+    ├── ARCHITECTURE.md                  # System architecture
+    ├── PROJECT-STRUCTURE.md             # Detailed structure
+    └── ...                              # Other docs
 ```
-
-For detailed information about the modular architecture, see [docs/PROJECT-STRUCTURE.md](docs/PROJECT-STRUCTURE.md).
 
 ## Technical Details
 
@@ -300,7 +403,7 @@ For detailed information about the modular architecture, see [docs/PROJECT-STRUC
 
 ### AI Model
 
-The wizard uses Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) by default, which provides:
+The wizard uses Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) by default, providing:
 - Excellent reasoning and analysis capabilities
 - Strong technical knowledge
 - Consistent formatting and structure
@@ -308,59 +411,44 @@ The wizard uses Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) by default, which
 
 ## Tips for Best Results
 
-1. **Be Specific**: Provide detailed system descriptions with clear goals and user types
-2. **Iterate**: Don't hesitate to request changes if something isn't quite right
-3. **Review Carefully**: Each stage builds on previous ones, so ensure accuracy
-4. **Provide Context**: When requesting changes, be specific about what needs improvement
-5. **Consider Scale**: Mention expected user base, data volume, and performance needs
+1. **Be Specific**: Include clear goals, user types, integrations, and constraints
+2. **Mention Scale**: Expected user base, data volume, performance needs
+3. **Include Context**: Compliance requirements, existing systems, team size
+4. **Iterate When Needed**: Use the revise option to refine outputs
+5. **Review Auto-Review Output**: Check the improved requirements after Stage 2
+
+## Testing
+
+Run the test suite:
+```bash
+npm test
+```
+
+Run tests with coverage:
+```bash
+npm run test:coverage
+```
 
 ## Troubleshooting
 
 ### "ANTHROPIC_API_KEY is required"
-Ensure you've set your API key using one of the three methods described in Installation.
+Ensure you've set your API key in `.env` or as environment variable.
 
 ### API Rate Limits
-If you encounter rate limits, the wizard will display an error. Wait a moment and try again.
+If you encounter rate limits, wait a moment and try again.
 
 ### Long Response Times
-Some stages (especially Technical Design) may take 90-120 seconds due to the complexity of the output.
+Some stages (especially Technical Design and Task Planner) may take 90-120 seconds due to output complexity.
 
 ### Output Not Showing
-If terminal output seems truncated, try:
-- Maximizing your terminal window
-- Checking the saved files in `output/` directory
-
-## Advanced Usage
-
-### Running Specific Stages
-
-To modify the wizard to skip certain stages, edit `src/orchestration/wizard-steps.js` and comment out steps in the array.
-
-### Custom Agents
-
-To add custom agents:
-
-1. Create a new prompt file in `src/prompts/` (e.g., `my-agent.js`)
-2. Export it from `src/prompts/index.js`
-3. Add a new step in `src/orchestration/wizard-steps.js`
-4. Define how it gets input and where it saves output
-
-See [docs/PROJECT-STRUCTURE.md](docs/PROJECT-STRUCTURE.md) for detailed instructions.
-
-### Integrating with Other Tools
-
-The generated markdown files can be:
-- Converted to PDF using pandoc
-- Imported into Notion, Confluence, or other documentation tools
-- Version controlled with git
-- Used as input for other AI tools or code generators
+Check saved files in `output/` directory if terminal output seems truncated.
 
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 Areas for improvement:
-- Additional agent types (DevOps, Security, etc.)
+- Additional agent types (DevOps, Security specialists)
 - Export formats (PDF, HTML, JSON)
 - Integration with project management tools
 - Template library for common system types
@@ -369,10 +457,8 @@ Areas for improvement:
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-## Support
-
-For issues, questions, or suggestions, please [open an issue](https://github.com/servika/ai-requirements-factory/issues).
-
 ## Acknowledgments
 
-Powered by [Anthropic's Claude](https://www.anthropic.com/claude) - Advanced AI assistant for complex reasoning and analysis.
+- Powered by [Anthropic's Claude](https://www.anthropic.com/claude)
+- Requirements methodology inspired by Karl Wiegers and IIBA BABOK
+- Architecture practices from SEI (Software Engineering Institute)

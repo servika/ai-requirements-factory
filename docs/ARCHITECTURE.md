@@ -4,244 +4,348 @@ This document describes the architecture and design of the AI Factory wizard sys
 
 ## Overview
 
-AI Factory is a CLI-based multi-agent orchestration system that guides users through the Software Development Lifecycle using specialized AI agents powered by Anthropic's Claude.
+AI Factory is a multi-agent orchestration system that guides users through the Software Development Lifecycle using 8 specialized AI agents powered by Anthropic's Claude. It transforms a high-level system description into comprehensive implementation plans.
 
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         User (CLI)                          │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    index.js (Entry Point)                    │
-│  - Environment validation                                    │
-│  - Configuration loading                                     │
-│  - Wizard initialization                                     │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Wizard Orchestrator                       │
-│  (src/wizard.js)                                            │
-│                                                              │
-│  - State management                                         │
-│  - Step progression logic                                   │
-│  - User interaction handling                                │
-│  - File output management                                   │
-│  - Review and iteration loop                                │
-└────────────┬───────────────────────────────┬────────────────┘
-             │                               │
-             ▼                               ▼
-┌─────────────────────────┐     ┌──────────────────────────┐
-│    Agent Prompts         │     │    Agent Executor        │
-│   (src/prompts.js)       │     │   (src/agent.js)        │
-│                          │     │                          │
-│  - Business Analyst      │     │  - API communication     │
-│  - Requirements Reviewer │     │  - Message handling      │
-│  - Technical Architect   │     │  - Error management      │
-│  - Technical Designer    │     │  - Response parsing      │
-│  - Testing Strategist    │     │                          │
-└──────────────────────────┘     └────────────┬─────────────┘
-                                              │
-                                              ▼
-                                 ┌────────────────────────────┐
-                                 │   Anthropic Claude API     │
-                                 │   (claude-sonnet-4)        │
-                                 └────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              User Interface                                  │
+│                    (CLI Terminal / React Web App)                           │
+└────────────────────────────────┬────────────────────────────────────────────┘
+                                 │
+                                 ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          Entry Point                                         │
+│              (index.js for CLI / server.js for Web)                         │
+│  - Environment validation                                                    │
+│  - Configuration loading                                                     │
+│  - Wizard initialization                                                     │
+└────────────────────────────────┬────────────────────────────────────────────┘
+                                 │
+                                 ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         Wizard Orchestrator                                  │
+│                      (src/orchestration/wizard.js)                          │
+│                                                                              │
+│  - State management (wizard-state.js)                                       │
+│  - Step configuration (wizard-steps.js)                                     │
+│  - Standard step processing with user review                                │
+│  - Auto-feedback step processing (for review stage)                         │
+│  - File output management                                                   │
+└───────────┬─────────────────────────────────────┬───────────────────────────┘
+            │                                     │
+            ▼                                     ▼
+┌───────────────────────────┐         ┌───────────────────────────────────────┐
+│      Agent Prompts        │         │        Agent Executor                 │
+│   (src/prompts/*.js)      │         │    (src/agents/base-agent.js)        │
+│                           │         │                                       │
+│  8 Specialized Agents:    │         │  - Anthropic API communication       │
+│  - Business Analyst       │         │  - Message handling                  │
+│  - Requirements Reviewer  │         │  - Retry logic with backoff          │
+│  - Technical Architect    │         │  - Error management                  │
+│  - Technical Designer     │         │                                       │
+│  - Testing Strategist     │         └─────────────────┬─────────────────────┘
+│  - Task Planner           │                           │
+│  - SDLC Task Allocator    │                           ▼
+│  - Agent Task Generator   │         ┌───────────────────────────────────────┐
+└───────────────────────────┘         │       Anthropic Claude API            │
+                                      │    (claude-sonnet-4-5-20250929)       │
+                                      └───────────────────────────────────────┘
+```
+
+## The 8-Stage Pipeline
+
+### Stage Overview
+
+| Stage | Agent | Input | Output | User Interaction |
+|-------|-------|-------|--------|------------------|
+| 1 | Business Analyst | System description | Requirements, User Stories, NFRs | Manual review |
+| 2 | Requirements Reviewer | Requirements | Review report | **Automatic** |
+| 3 | Technical Architect | Req + Review | Architecture, C4, Tech Stack | Manual review |
+| 4 | Technical Designer | Req + Review + Arch | APIs, Data Models, Components | Manual review |
+| 5 | Testing Strategist | Req + Arch + Design | Test Strategy, Quality Gates | Manual review |
+| 6 | Task Planner | ALL outputs | WBS, Critical Path, Tasks | Manual review |
+| 7 | SDLC Allocator | ALL outputs | Role Tasks, RACI, Handoffs | Manual review |
+| 8 | Agent Task Generator | Arch + Design + Alloc | AI Prompts, Verification | Manual review |
+
+### Data Flow Diagram
+
+```
+USER INPUT
+    │
+    ▼
+┌─────────────────┐
+│ STAGE 1         │
+│ Business        │──────────────────────────────────────────────────┐
+│ Analyst         │                                                   │
+└────────┬────────┘                                                   │
+         │ Requirements                                               │
+         ▼                                                            │
+┌─────────────────┐                                                   │
+│ STAGE 2 (AUTO)  │                                                   │
+│ Requirements    │──┐                                                │
+│ Reviewer        │  │ Review Feedback                                │
+└────────┬────────┘  │                                                │
+         │           │                                                │
+         │           ▼                                                │
+         │    ┌─────────────┐                                         │
+         │    │ Regenerate  │ (Improved Requirements)                 │
+         │    │ Stage 1     │─────────────────────────────────────────┤
+         │    └─────────────┘                                         │
+         │                                                            │
+         ▼                                                            │
+┌─────────────────┐                                                   │
+│ STAGE 3         │◄──────────────────────────────────────────────────┤
+│ Technical       │ (Requirements + Review)                           │
+│ Architect       │                                                   │
+└────────┬────────┘                                                   │
+         │ Architecture                                               │
+         ▼                                                            │
+┌─────────────────┐                                                   │
+│ STAGE 4         │◄──────────────────────────────────────────────────┤
+│ Technical       │ (Requirements + Review + Architecture)            │
+│ Designer        │                                                   │
+└────────┬────────┘                                                   │
+         │ Design                                                     │
+         ▼                                                            │
+┌─────────────────┐                                                   │
+│ STAGE 5         │◄──────────────────────────────────────────────────┤
+│ Testing         │ (Requirements + Architecture + Design)            │
+│ Strategist      │                                                   │
+└────────┬────────┘                                                   │
+         │ Testing Strategy                                           │
+         ▼                                                            │
+┌─────────────────┐                                                   │
+│ STAGE 6         │◄──────────────────────────────────────────────────┘
+│ Task            │ (ALL previous outputs)
+│ Planner         │
+└────────┬────────┘
+         │ Task Breakdown
+         ▼
+┌─────────────────┐
+│ STAGE 7         │◄─── (ALL previous outputs including Task Plan)
+│ SDLC Task       │
+│ Allocator       │
+└────────┬────────┘
+         │ Role Allocation
+         ▼
+┌─────────────────┐
+│ STAGE 8         │◄─── (Architecture + Design + Allocation)
+│ Agent Task      │
+│ Generator       │
+└────────┬────────┘
+         │
+         ▼
+  IMPLEMENTATION-READY PLAN
 ```
 
 ## Component Breakdown
 
-### 1. Entry Point (`index.js`)
-
-**Responsibilities:**
-- Load environment variables
-- Validate API key presence
-- Initialize and run the wizard
-- Global error handling
-
-**Key Functions:**
-- `main()`: Entry point, validates configuration and starts wizard
-
-### 2. Wizard Orchestrator (`src/wizard.js`)
+### 1. Wizard Orchestrator (`src/orchestration/wizard.js`)
 
 **Responsibilities:**
 - Manage wizard state across all steps
-- Control step progression and iteration
-- Handle user input and review process
+- Control step progression
+- Handle standard steps with user interaction
+- Handle auto-feedback steps (automatic review)
 - Save outputs to files
-- Display formatted results
-
-**Key Components:**
-
-**State Management:**
-```javascript
-{
-  systemDescription: string,    // User's initial input
-  outputs: {                     // Outputs from each stage
-    requirements: string,
-    requirementsReview: string,
-    architecture: string,
-    technicalDesign: string,
-    testingStrategy: string
-  },
-  currentStep: number           // Current wizard step
-}
-```
-
-**Step Definition:**
-```javascript
-{
-  id: string,                   // Unique step identifier
-  name: string,                 // Display name
-  prompt: AgentPrompt,          // Prompt configuration
-  getInput: () => string,       // Function to get input for this step
-  saveKey: string              // Key for saving output
-}
-```
 
 **Key Methods:**
-- `run()`: Main wizard loop
-- `executeStep()`: Execute a single agent step
-- `getUserReview()`: Get user feedback and decision
-- `saveToFile()`: Save output to individual file
-- `saveCompleteOutput()`: Create combined documentation
 
-### 3. Agent Prompts (`src/prompts.js`)
+```javascript
+class Wizard {
+  // Standard step with user review
+  async processStep(stepIndex) {
+    // Execute step → Display → Save → Get user decision
+    // Support iteration with feedback
+  }
 
-**Responsibilities:**
-- Define system prompts for each agent role
-- Generate contextual user prompts
-- Support feedback-based iteration
+  // Auto-feedback step (for requirements review)
+  async processAutoFeedbackStep(stepIndex) {
+    // 1. Execute review step automatically
+    // 2. Use review as feedback to regenerate target step
+    // 3. No user interaction needed
+  }
+
+  // Main run loop
+  async run() {
+    for (let i = 0; i < this.steps.length; i++) {
+      if (step.autoFeedback) {
+        await this.processAutoFeedbackStep(i);
+      } else {
+        await this.processStep(i);
+      }
+    }
+  }
+}
+```
+
+### 2. Step Configuration (`src/orchestration/wizard-steps.js`)
+
+**Step Definition Structure:**
+```javascript
+{
+  id: string,                    // Unique step identifier
+  name: string,                  // Display name
+  prompt: AgentPrompt,           // Prompt configuration
+  getInput: () => string,        // Function to get input for this step
+  saveKey: string,               // Key for saving output
+  autoFeedback?: {               // Optional: auto-feedback configuration
+    targetStepIndex: number,     // Step to feed back to
+    targetSaveKey: string        // Output key to regenerate
+  }
+}
+```
+
+**Context Propagation:**
+
+| Step | getInput() Returns |
+|------|-------------------|
+| 1 (BA) | System description |
+| 2 (Review) | Requirements |
+| 3 (Architect) | Requirements + Review |
+| 4 (Designer) | Requirements + Review + Architecture |
+| 5 (Testing) | Requirements + Architecture + Design |
+| 6 (Planner) | ALL outputs (Req, Review, Arch, Design, Testing) |
+| 7 (Allocator) | ALL outputs including Task Plan |
+| 8 (Generator) | Architecture + Design + Allocation |
+
+### 3. Agent Prompts (`src/prompts/*.js`)
+
+Each prompt follows industry best practices:
+
+| Agent | Methodology |
+|-------|-------------|
+| Business Analyst | BABOK v3, Karl Wiegers, INVEST criteria |
+| Requirements Reviewer | Wiegers Quality Attributes, Gap Analysis |
+| Technical Architect | SEI ATAM, ADD, Views & Beyond |
+| Technical Designer | Design patterns, API contracts, Data modeling |
+| Testing Strategist | Risk-based testing, Test pyramid, Shift-left |
+| Task Planner | WBS principles, Critical path, MVP scoping |
+| SDLC Allocator | RACI matrix, Handoff protocols |
+| Agent Task Generator | Prompt engineering, Context management |
 
 **Prompt Structure:**
 ```javascript
 {
   name: string,                                    // Agent name
-  systemPrompt: string,                           // Role definition
-  getUserPrompt: (input, feedback?) => string    // Context-aware prompt generator
+  systemPrompt: string,                            // Role definition with methodology
+  getUserPrompt: (input, feedback?) => string     // Context-aware prompt generator
 }
 ```
 
-**Five Agent Definitions:**
-
-1. **Business Analyst** - Requirements and user stories
-2. **Requirements Reviewer** - Validation and gap analysis
-3. **Technical Architect** - System architecture and tech stack
-4. **Technical Designer** - Components, APIs, data models
-5. **Testing Strategist** - Comprehensive testing strategy
-
-### 4. Agent Executor (`src/agent.js`)
+### 4. Agent Executor (`src/agents/base-agent.js`)
 
 **Responsibilities:**
 - Interface with Anthropic API
 - Handle API authentication
-- Execute single-shot and conversational interactions
-- Error handling and retry logic
+- Retry logic with exponential backoff
+- Error handling
 
-**Key Methods:**
-- `execute(systemPrompt, userPrompt, maxTokens)`: Single interaction
-- `executeWithHistory(systemPrompt, messages, maxTokens)`: Multi-turn conversation
-
-## Data Flow
-
-### Initial Flow (Happy Path)
-
-```
-1. User Input
-   └─> System Description entered
-
-2. Step 1: Business Analyst
-   ├─> Input: System Description
-   ├─> Agent generates requirements
-   ├─> Output saved to file
-   ├─> User reviews
-   └─> User accepts → Next step
-
-3. Step 2: Requirements Reviewer
-   ├─> Input: Requirements from Step 1
-   ├─> Agent reviews and validates
-   ├─> Output saved to file
-   ├─> User reviews
-   └─> User accepts → Next step
-
-4. Step 3: Technical Architect
-   ├─> Input: Requirements + Review
-   ├─> Agent designs architecture
-   ├─> Output saved to file
-   ├─> User reviews
-   └─> User accepts → Next step
-
-5. Step 4: Technical Designer
-   ├─> Input: Architecture
-   ├─> Agent creates detailed design
-   ├─> Output saved to file
-   ├─> User reviews
-   └─> User accepts → Next step
-
-6. Step 5: Testing Strategist
-   ├─> Input: Technical Design
-   ├─> Agent creates test strategy
-   ├─> Output saved to file
-   ├─> User reviews
-   └─> User accepts → Complete
-
-7. Completion
-   └─> Generate combined documentation
+**Key Features:**
+```javascript
+class BaseAgent {
+  async execute(systemPrompt, userPrompt, maxTokens) {
+    // Retry with exponential backoff
+    // Handle rate limits
+    // Return response text
+  }
+}
 ```
 
-### Iteration Flow
+## Auto-Feedback Mechanism
+
+The Requirements Reviewer (Stage 2) uses auto-feedback to improve requirements without user intervention:
 
 ```
-User requests changes (option 2)
-   ├─> User provides feedback
-   ├─> Agent regenerates with feedback context
-   ├─> New output displayed
-   ├─> User reviews again
-   └─> Accept or request more changes
+┌─────────────────────────────────────────────────────────────────┐
+│                    AUTO-FEEDBACK FLOW                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Business Analyst generates requirements                     │
+│     ↓                                                           │
+│  2. User reviews and accepts Stage 1                            │
+│     ↓                                                           │
+│  3. AUTO: Requirements Reviewer generates review                │
+│     ↓                                                           │
+│  4. AUTO: Review fed back to Business Analyst                   │
+│     ↓                                                           │
+│  5. AUTO: Business Analyst regenerates improved requirements    │
+│     ↓                                                           │
+│  6. Continue to Stage 3 with improved requirements              │
+│                                                                 │
+│  No user interaction in steps 3-5                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Configuration:**
+```javascript
+{
+  id: 'requirementsReviewer',
+  name: 'Requirements Review',
+  prompt: AGENT_PROMPTS.requirementsReviewer,
+  getInput: () => state.getOutput('requirements'),
+  saveKey: 'requirementsReview',
+  autoFeedback: {
+    targetStepIndex: 0,      // Feed back to Stage 1
+    targetSaveKey: 'requirements'
+  }
+}
+```
+
+## State Management
+
+### Wizard State (`src/orchestration/wizard-state.js`)
+
+```javascript
+{
+  systemDescription: string,     // User's initial input
+  currentStep: number,           // Current wizard step (0-7)
+  outputs: {
+    requirements: string,        // Stage 1 output (improved after Stage 2)
+    requirementsReview: string,  // Stage 2 output
+    architecture: string,        // Stage 3 output
+    technicalDesign: string,     // Stage 4 output
+    testingStrategy: string,     // Stage 5 output
+    taskPlanner: string,         // Stage 6 output
+    sdlcTaskAllocation: string,  // Stage 7 output
+    agentTasks: string           // Stage 8 output
+  }
+}
 ```
 
 ## File System Integration
 
-### Input
-- `.env` file (optional): API key configuration
-- Environment variables: Runtime configuration
-- Command-line arguments: Alternative API key input
-
 ### Output Structure
 ```
 output/
-├── 1-businessAnalyst.md
-├── 2-requirementsReviewer.md
-├── 3-technicalArchitect.md
-├── 4-technicalDesigner.md
-├── 5-testingStrategist.md
-└── COMPLETE-DOCUMENTATION.md
+├── 1-businessAnalyst.md          # Requirements (improved by auto-review)
+├── 2-requirementsReviewer.md     # Review report
+├── 3-technicalArchitect.md       # Architecture, C4, ADRs
+├── 4-technicalDesigner.md        # Components, APIs, Data Models
+├── 5-testingStrategist.md        # Test Strategy, Quality Gates
+├── 6-taskPlanner.md              # WBS, Critical Path, Tasks
+├── 7-sdlcTaskAllocator.md        # RACI, Role Tasks, Handoffs
+├── 8-agentTaskGenerator.md       # AI Prompts, Verification
+└── COMPLETE-DOCUMENTATION.md     # All stages combined
 ```
-
-### Output Format
-- Markdown files for easy reading and conversion
-- Timestamped in combined documentation
-- Individual files for granular access
-- Combined document for holistic view
 
 ## Design Patterns
 
-### 1. Strategy Pattern (Agent Prompts)
-Each agent uses a different strategy (prompt) for the same interface (generate documentation).
+### 1. Pipeline Pattern
+Each step's output feeds into subsequent steps, creating a processing pipeline with cumulative context.
 
-### 2. State Machine (Wizard)
+### 2. Strategy Pattern
+Each agent uses a different strategy (prompt) for the same interface.
+
+### 3. State Machine
 The wizard implements a state machine with transitions:
-- `pending` → `in_progress` → `completed` (happy path)
-- `in_progress` → `in_progress` (iteration)
-- Any state → `quit` (user exit)
+- `pending` → `in_progress` → `completed`
+- Special path for auto-feedback steps
 
-### 3. Pipeline Pattern (Step Execution)
-Each step's output feeds into the next step's input, creating a processing pipeline.
-
-### 4. Template Method (Agent Execution)
+### 4. Template Method
 The base agent execution flow is fixed, but specific prompts vary per agent.
 
 ## Error Handling Strategy
@@ -249,7 +353,7 @@ The base agent execution flow is fixed, but specific prompts vary per agent.
 ### API Errors
 - Network failures: Display error, allow retry
 - Authentication errors: Clear message about API key
-- Rate limiting: Inform user to wait and retry
+- Rate limiting: Automatic retry with exponential backoff
 - Invalid responses: Log and display user-friendly message
 
 ### User Input Errors
@@ -257,184 +361,130 @@ The base agent execution flow is fixed, but specific prompts vary per agent.
 - Invalid menu choices: Re-prompt with valid options
 - Interrupt (Ctrl+C): Graceful shutdown, save progress
 
-### File System Errors
-- Output directory creation: Create recursively if missing
-- File write failures: Display error, continue wizard
-- Permission errors: Clear message about file permissions
-
 ## Configuration & Extensibility
 
 ### Adding New Agents
 
-1. **Add prompt in `src/prompts.js`:**
+1. **Create prompt file** (`src/prompts/09-new-agent.js`):
 ```javascript
-export const AGENT_PROMPTS = {
-  // ... existing agents
-  newAgent: {
-    name: 'New Agent Name',
-    systemPrompt: '...',
-    getUserPrompt: (input, feedback) => '...'
-  }
+export const newAgentPrompt = {
+  name: 'New Agent Name',
+  systemPrompt: '...',
+  getUserPrompt: (input, feedback) => '...'
 };
 ```
 
-2. **Add step in `src/wizard.js`:**
+2. **Export from index** (`src/prompts/index.js`):
 ```javascript
-this.steps = [
-  // ... existing steps
-  {
-    id: 'newAgent',
-    name: 'New Agent Stage',
-    prompt: AGENT_PROMPTS.newAgent,
-    getInput: () => this.state.outputs.previousStage,
-    saveKey: 'newAgentOutput'
-  }
-];
+import { newAgentPrompt } from './09-new-agent.js';
+export const AGENT_PROMPTS = {
+  // ... existing
+  newAgent: newAgentPrompt
+};
 ```
 
-### Customizing Agents
+3. **Add step** (`src/orchestration/wizard-steps.js`):
+```javascript
+{
+  id: 'newAgent',
+  name: 'New Agent Stage',
+  prompt: AGENT_PROMPTS.newAgent,
+  getInput: () => state.getOutput('previousStage'),
+  saveKey: 'newAgentOutput'
+}
+```
 
-**Modify Prompt Behavior:**
-- Edit `systemPrompt` to change agent personality/approach
-- Adjust `getUserPrompt()` to change input formatting
-- Modify output parsing in wizard for custom formats
+### Adding Auto-Feedback to a Step
 
-**Adjust Response Length:**
-- Change `maxTokens` parameter in `executeStep()`
-- Default: 8192 for complex outputs, 4096 for simpler ones
-
-**Change Model:**
-- Set `CLAUDE_MODEL` environment variable
-- Options: `claude-sonnet-4-5-20250929`, `claude-opus-4-20250514`, `claude-haiku-4-5-20251001`
+```javascript
+{
+  id: 'reviewStep',
+  name: 'Review Stage',
+  prompt: AGENT_PROMPTS.reviewer,
+  getInput: () => state.getOutput('target'),
+  saveKey: 'review',
+  autoFeedback: {
+    targetStepIndex: 0,      // Which step to feed back to
+    targetSaveKey: 'target'  // Which output to regenerate
+  }
+}
+```
 
 ## Performance Considerations
 
-### Response Time
-- Average: 2-4 minutes per stage
-- Factors: Complexity, token count, API load
-- Optimization: Using appropriate token limits
+### Response Time by Stage
+| Stage | Typical Duration | Tokens |
+|-------|------------------|--------|
+| 1 (BA) | 60-90s | 4000-6000 |
+| 2 (Review) | 45-60s | 3000-4000 |
+| 3 (Architect) | 90-120s | 5000-7000 |
+| 4 (Designer) | 90-120s | 5000-8000 |
+| 5 (Testing) | 60-90s | 4000-6000 |
+| 6 (Planner) | 90-120s | 5000-8000 |
+| 7 (Allocator) | 60-90s | 4000-6000 |
+| 8 (Generator) | 90-120s | 5000-8000 |
 
-### Token Usage
-- System prompts: ~500-1500 tokens each
-- User input: Variable (100-5000 tokens)
-- Responses: 2000-8000 tokens
-- Total per run: ~50,000-100,000 tokens
-
-### Caching
-- No caching implemented (each request is fresh)
-- Potential improvement: Cache responses per system description hash
+### Total Token Usage
+- System prompts: ~1000-2000 tokens each
+- User input: Variable (500-10000 tokens)
+- Responses: 3000-8000 tokens each
+- Total per run: ~80,000-150,000 tokens
 
 ## Security Considerations
 
 ### API Key Management
 - Never log or display API keys
-- Support multiple input methods
-- Use environment variables (best practice)
+- Use environment variables
 - `.env` in `.gitignore` by default
 
-### Input Validation
-- System description: No length limit (user responsibility)
+### Input Safety
+- System description: User responsibility for content
 - User review choices: Validated against allowed options
-- File paths: Use safe path joining
+- File paths: Safe path joining
 
 ### Output Safety
-- No user input in file names (prevents injection)
+- No user input in file names
 - Output directory created with safe permissions
 - No execution of generated content
 
-## Testing Strategy (For AI Factory Itself)
+## Testing Strategy
 
-### Unit Tests (Recommended)
-- Agent prompt generation
-- State management
-- Input validation
-- File operations
+### Unit Tests (`test/`)
+- `wizard-steps.test.js`: Step configuration and data flow
+- `wizard-state.test.js`: State management
+- `sdlc-task-allocator.test.js`: SDLC prompt exports
+- `file-manager.test.js`: File operations
+- `environment.test.js`: Configuration
+- `constants.test.js`: Error handling
 
-### Integration Tests (Recommended)
-- Agent execution with mock API
-- Step progression
-- User review flow
-- File output
-
-### E2E Tests (Optional)
-- Full wizard run with real API
-- Iteration scenarios
-- Error handling paths
-
-## Monitoring & Observability
-
-### Logging
-- Current: Console output only
-- Potential: File-based logging, structured logs
-
-### Metrics
-- Current: None
-- Potential: Response times, token usage, success rates
-
-### Error Tracking
-- Current: Console error output
-- Potential: Error aggregation, alerting
-
-## Future Enhancements
-
-### Short Term
-- Add more agents (DevOps, Security, etc.)
-- Export to PDF/HTML formats
-- Progress saving and resume
-- Template library for common systems
-
-### Medium Term
-- Web interface
-- Team collaboration features
-- Version control integration
-- Custom agent creation UI
-
-### Long Term
-- AI-driven code generation
-- Integration with IDEs
-- Project management tool integration
-- Multi-language support
+### Running Tests
+```bash
+npm test              # Run all tests
+npm run test:coverage # With coverage report
+```
 
 ## Dependencies
 
-### Production Dependencies
+### Production
 - `@anthropic-ai/sdk` (^0.30.0): Official Anthropic API client
 - `chalk` (^5.3.0): Terminal styling
 - `ora` (^8.0.1): Terminal spinners
 - `dotenv` (^16.4.5): Environment variables
-- `readline` (built-in): User input
 
-### Development Dependencies
-- None currently
-- Recommended: `jest`, `eslint`, `prettier`
+### Development
+- `c8`: Code coverage
+- `concurrently`: Parallel process running
 
-## Deployment Considerations
+## Future Enhancements
 
-### As CLI Tool
-- Current implementation (npm start)
-- Can be packaged as global npm package
-- Binary executable with pkg or nexe
+### Planned
+- Web-based auto-feedback visualization
+- Progress persistence and resume
+- Custom agent creation UI
+- Export to PDF/HTML
 
-### As Service
-- Wrap in API server (Express, Fastify)
-- Add authentication and user management
-- Store outputs in database
-- Queue system for long-running tasks
-
-### As Library
-- Export Wizard and Agent classes
-- Allow programmatic usage
-- Support custom prompts and agents
-- Event-based notifications
-
-## Conclusion
-
-AI Factory demonstrates a clean, modular architecture for orchestrating multiple AI agents in a sequential workflow. The design prioritizes:
-
-1. **Extensibility**: Easy to add new agents and stages
-2. **User Control**: Review and iteration at each step
-3. **Transparency**: Clear output and state management
-4. **Reliability**: Error handling and graceful degradation
-5. **Simplicity**: Minimal dependencies, clear code structure
-
-The architecture supports both the current CLI use case and future expansion into web services, team collaboration, and advanced automation scenarios.
+### Potential
+- Team collaboration features
+- Integration with project management tools
+- AI-driven code generation from tasks
+- Multi-language support

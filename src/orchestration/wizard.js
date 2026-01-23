@@ -84,6 +84,51 @@ export class Wizard {
   }
 
   /**
+   * Process auto-feedback step: runs automatically without user interaction,
+   * feeds review back to target step for one iteration
+   */
+  async processAutoFeedbackStep(stepIndex) {
+    const step = this.steps[stepIndex];
+    const { targetStepIndex, targetSaveKey } = step.autoFeedback;
+    const targetStep = this.steps[targetStepIndex];
+
+    Display.showStepHeader(stepIndex + 1, this.steps.length, `${step.name} (Auto)`);
+
+    // Step 1: Execute the review step
+    Display.info(chalk.cyan('Running automatic review...'));
+    const reviewOutput = await this.executeStep(stepIndex);
+    this.state.saveOutput(step.saveKey, reviewOutput);
+
+    // Save review to file
+    const reviewFilepath = await this.fileManager.saveFile(
+      `${stepIndex + 1}-${step.id}.md`,
+      reviewOutput
+    );
+    Display.showFileSaved(reviewFilepath);
+
+    // Step 2: Use review as feedback to regenerate the target step
+    Display.info(chalk.cyan(`\nApplying review feedback to improve ${targetStep.name}...`));
+    Display.showRegenerating();
+
+    const improvedOutput = await this.executeStep(targetStepIndex, reviewOutput);
+    this.state.saveOutput(targetSaveKey, improvedOutput);
+
+    // Display improved output
+    Display.showOutput(`${targetStep.name} (Improved)`, improvedOutput);
+
+    // Save improved output to file (overwrite original)
+    const improvedFilepath = await this.fileManager.saveFile(
+      `${targetStepIndex + 1}-${targetStep.id}.md`,
+      improvedOutput
+    );
+    Display.showFileSaved(improvedFilepath);
+
+    Display.info(chalk.green('\n✓ Auto-review complete. Requirements have been improved based on AI review.\n'));
+
+    return CONFIG.USER_ACTIONS.ACCEPT;
+  }
+
+  /**
    * Run the complete wizard
    */
   async run() {
@@ -104,7 +149,15 @@ export class Wizard {
     for (let i = 0; i < this.steps.length; i++) {
       this.state.setCurrentStep(i);
 
-      const result = await this.processStep(i);
+      const step = this.steps[i];
+      let result;
+
+      // Check if this step has auto-feedback configuration
+      if (step.autoFeedback) {
+        result = await this.processAutoFeedbackStep(i);
+      } else {
+        result = await this.processStep(i);
+      }
 
       if (result === CONFIG.USER_ACTIONS.QUIT) {
         Display.showTermination();

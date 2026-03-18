@@ -62,43 +62,51 @@ describe('Wizard Step Context Propagation', () => {
     assert.ok(input.includes('=== TECHNICAL ARCHITECTURE ==='), 'should have architecture header');
   });
 
-  test('testingStrategist receives requirements, architecture, and design', async () => {
+  test('testingStrategist receives requirements, review, architecture, and design', async () => {
     const { createWizardSteps } = await import('../src/orchestration/wizard-steps.js');
     const { WizardState } = await import('../src/orchestration/wizard-state.js');
-    
+
     const state = new WizardState();
     state.saveOutput('requirements', 'REQ_CONTENT');
+    state.saveOutput('requirementsReview', 'REVIEW_CONTENT');
     state.saveOutput('architecture', 'ARCH_CONTENT');
     state.saveOutput('technicalDesign', 'DESIGN_CONTENT');
-    
+
     const steps = createWizardSteps(state);
     const testingStep = steps.find(s => s.id === 'testingStrategist');
-    
+
     const input = testingStep.getInput();
-    
+
     assert.ok(input.includes('REQ_CONTENT'), 'should include requirements');
+    assert.ok(input.includes('REVIEW_CONTENT'), 'should include requirements review');
     assert.ok(input.includes('ARCH_CONTENT'), 'should include architecture');
     assert.ok(input.includes('DESIGN_CONTENT'), 'should include technical design');
   });
 
-  test('agentTaskGenerator receives architecture, design, and allocation', async () => {
+  test('agentTaskGenerator receives requirements, architecture, design, task planner, and allocation', async () => {
     const { createWizardSteps } = await import('../src/orchestration/wizard-steps.js');
     const { WizardState } = await import('../src/orchestration/wizard-state.js');
-    
+
     const state = new WizardState();
+    state.saveOutput('requirements', 'REQ_CONTENT');
     state.saveOutput('architecture', 'ARCH_CONTENT');
     state.saveOutput('technicalDesign', 'DESIGN_CONTENT');
+    state.saveOutput('taskPlanner', 'TASK_CONTENT');
     state.saveOutput('sdlcTaskAllocation', 'ALLOC_CONTENT');
-    
+
     const steps = createWizardSteps(state);
     const generatorStep = steps.find(s => s.id === 'agentTaskGenerator');
-    
+
     const input = generatorStep.getInput();
-    
+
+    assert.ok(input.includes('REQ_CONTENT'), 'should include requirements');
     assert.ok(input.includes('ARCH_CONTENT'), 'should include architecture');
     assert.ok(input.includes('DESIGN_CONTENT'), 'should include technical design');
+    assert.ok(input.includes('TASK_CONTENT'), 'should include task planner');
     assert.ok(input.includes('ALLOC_CONTENT'), 'should include SDLC allocation');
+    assert.ok(input.includes('=== REQUIREMENTS & USER STORIES ==='), 'should have requirements header');
     assert.ok(input.includes('=== TECHNICAL ARCHITECTURE ==='), 'should have architecture header');
+    assert.ok(input.includes('=== TASK PLANNER & IMPLEMENTATION ROADMAP ==='), 'should have task planner header');
     assert.ok(input.includes('=== SDLC TASK ALLOCATION ==='), 'should have allocation header');
   });
 

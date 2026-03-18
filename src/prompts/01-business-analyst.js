@@ -465,16 +465,33 @@ Ensure each requirement passes these quality checks:
 
   getUserPrompt: (systemDescription, feedback = null) => {
     if (feedback) {
-      return `Based on the previous requirements and this feedback: "${feedback}"
+      return `You previously generated a requirements document for the system described below. A Requirements Reviewer has analyzed it and produced a detailed review report with issues, gaps, and recommendations. Use that review to produce an improved requirements document.
 
-Please refine and update the requirements document accordingly:
-1. Address all points raised in the feedback
-2. Maintain all traceability links (BO → BR → US → AC)
-3. Ensure consistency across all sections
-4. Update any impacted dependent requirements
-5. Re-validate against Wiegers Quality Attributes
+## System Description
 
-Original context preserved - update only what's needed based on feedback.`;
+${systemDescription}
+
+---
+
+## Requirements Review Feedback
+
+${feedback}
+
+---
+
+## Instructions for Revision
+
+1. Read the review report carefully and extract all Critical Issues, Important Issues, and Gap Analysis items
+2. Address every Critical Issue (Must Fix) — these block progress to architecture
+3. Address all Important Issues (Should Fix) where feasible
+4. Fill all identified functional, NFR, security, and data gaps
+5. Rewrite or split any acceptance criteria flagged as vague, untestable, or not in Given-When-Then format
+6. Fix all ambiguity issues — replace vague terms with specific, measurable values
+7. Ensure full BO → BR → US → AC traceability (fix any orphan requirements)
+8. Re-validate every requirement against Wiegers Quality Attributes before output
+9. Output the **complete** updated requirements document — not a diff or summary
+
+Use the same structured format defined in your system prompt.`;
     }
     return `Analyze this system description and create comprehensive requirements documentation following the BABOK methodology and structured format defined above.
 

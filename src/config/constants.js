@@ -4,7 +4,7 @@
 
 export const CONFIG = {
   // Claude API configuration
-  DEFAULT_MODEL: process.env.CLAUDE_MODEL || 'claude-sonnet-4-5-20250929',
+  DEFAULT_MODEL: process.env.CLAUDE_MODEL || 'claude-sonnet-4-6',
   MAX_TOKENS: {
     SIMPLE: 16000,
     COMPLEX: 32000,

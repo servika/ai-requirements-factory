@@ -572,17 +572,31 @@ For each priority scenario from the utility tree, provide detailed specification
 
   getUserPrompt: (requirements, feedback = null) => {
     if (feedback) {
-      return `Based on this feedback: "${feedback}", please refine the technical architecture.
+      return `You previously generated a technical architecture document for the requirements below. The user has reviewed it and provided feedback requesting specific revisions. Produce an updated, complete architecture document that addresses the feedback.
 
-When revising:
-1. Re-evaluate affected tradeoffs
-2. Update the utility tree if priorities changed
-3. Document any new architectural risks
-4. Ensure ADRs reflect the changes
-5. Validate that quality attribute scenarios still hold
+## Requirements Context
 
-Requirements Context:
-${requirements}`;
+${requirements}
+
+---
+
+## User Feedback
+
+${feedback}
+
+---
+
+## Revision Instructions
+
+1. Identify all concerns raised in the feedback and address each one explicitly
+2. Re-evaluate any tradeoffs that the feedback challenges — update tradeoff tables accordingly
+3. Revise the Quality Attribute Utility Tree if priorities or scenarios changed
+4. Update affected ADRs with revised decisions, alternatives, and rationale
+5. Add or update architectural risks surfaced by the feedback
+6. Validate that all quality attribute scenarios still hold after changes
+7. Output the **complete** updated architecture document — not a partial diff
+
+Use the structured format defined in your system prompt.`;
     }
     return `Based on the following requirements, design the system architecture using SEI practices (ATAM, ADD).
 

@@ -53,6 +53,8 @@ export function createWizardSteps(state) {
       getInput: () => (
         '=== REQUIREMENTS & USER STORIES ===\n\n' +
         (state.getOutput('requirements') || '') +
+        '\n\n=== REQUIREMENTS REVIEW ===\n\n' +
+        (state.getOutput('requirementsReview') || '') +
         '\n\n=== TECHNICAL ARCHITECTURE ===\n\n' +
         (state.getOutput('architecture') || '') +
         '\n\n=== TECHNICAL DESIGN ===\n\n' +
@@ -98,10 +100,14 @@ export function createWizardSteps(state) {
       name: 'Agent Task Generation',
       prompt: AGENT_PROMPTS.agentTaskGenerator,
       getInput: () => (
-        '=== TECHNICAL ARCHITECTURE ===\n\n' +
+        '=== REQUIREMENTS & USER STORIES ===\n\n' +
+        (state.getOutput('requirements') || '') +
+        '\n\n=== TECHNICAL ARCHITECTURE ===\n\n' +
         (state.getOutput('architecture') || '') +
         '\n\n=== TECHNICAL DESIGN ===\n\n' +
         (state.getOutput('technicalDesign') || '') +
+        '\n\n=== TASK PLANNER & IMPLEMENTATION ROADMAP ===\n\n' +
+        (state.getOutput('taskPlanner') || '') +
         '\n\n=== SDLC TASK ALLOCATION ===\n\n' +
         (state.getOutput('sdlcTaskAllocation') || '')
       ),

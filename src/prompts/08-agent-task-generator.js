@@ -1031,11 +1031,15 @@ IF task fails completely:
       allocation = allocationData;
     }
 
-    let prompt = `Based on the SDLC task allocation below, generate detailed, executable AI agent tasks.
+    const rawInput = typeof allocation === 'object' && allocation.raw
+      ? allocation.raw
+      : (typeof allocation === 'string' ? allocation : JSON.stringify(allocation, null, 2));
 
-## SDLC Task Allocation
+    let prompt = `Based on the project documentation provided below, generate detailed, executable AI agent tasks. Each task must be directly traceable to user stories and implementation tasks from the plan.
 
-${typeof allocation === 'object' && allocation.raw ? allocation.raw : (typeof allocation === 'string' ? allocation : JSON.stringify(allocation, null, 2))}
+## Project Documentation
+
+${rawInput}
 
 ${feedback ? `\n## Revision Feedback\n${feedback}\n` : ''}
 
@@ -1045,24 +1049,26 @@ ${feedback ? `\n## Revision Feedback\n${feedback}\n` : ''}
 
 Generate comprehensive agent tasks with:
 
-1. **Optimized Prompts**: Ready-to-use prompts for AI coding assistants
-2. **Context Management**: Only relevant context for each task
-3. **Human Review Gates**: Clear checkpoints for human approval
-4. **Verification Steps**: How to validate each task's output
-5. **Execution Order**: Proper sequencing with dependencies
-6. **Quality Checks**: Per-task quality requirements
+1. **Requirements Traceability**: Each task traces to a User Story (US-XXX) and Task ID (TASK-XXX)
+2. **Optimized Prompts**: Ready-to-use, self-contained prompts for AI coding assistants
+3. **Context Management**: Include only relevant context for each specific task
+4. **Human Review Gates**: Clear checkpoints for human approval at critical stages
+5. **Verification Steps**: Automated and manual checks to validate each task's output
+6. **Execution Order**: Proper sequencing with dependency graph
+7. **Quality Checks**: Per-task linting, testing, and security requirements
 
 **CRITICAL Requirements:**
-- Prompts should be self-contained with all needed context
-- Include specific file paths and code structure
-- Define clear acceptance criteria
-- Identify security-sensitive tasks for review
-- Enable incremental execution with rollback points
+- Prompts must be self-contained — include all specs the agent needs, reference file paths
+- Derive tasks from the Task Planner WBS and SDLC allocation, not from imagination
+- Include specific file paths and code structure from the Technical Design
+- Define clear acceptance criteria matching the user story AC from requirements
+- Identify security-sensitive tasks for mandatory human review
+- Enable incremental execution with rollback possible at each gate
 
 **Output Format:**
-Use the markdown format specified in your system prompt. Do NOT output raw JSON - use structured markdown with code blocks for prompts and specifications.
+Use the markdown format specified in your system prompt. Do NOT output raw JSON — use structured markdown with code blocks for prompts and specifications.
 
-Focus on making prompts that will generate high-quality, consistent code that matches the project's architecture and standards.`;
+Focus on making prompts that will generate high-quality, consistent code matching the project's architecture and standards.`;
 
     return prompt;
   },

@@ -10,7 +10,6 @@ import { CONFIG, sanitizeError } from '../../src/config/constants.js';
 import { WizardService } from './services/wizard-service.js';
 import { SessionManager } from './services/session-manager.js';
 import { SocketController } from './controllers/socket-controller.js';
-import { createApiRoutes } from './routes/api-routes.js';
 
 // Get directory paths
 const __filename = fileURLToPath(import.meta.url);
@@ -54,9 +53,6 @@ app.use(express.json({ limit: CONFIG.INPUT.MAX_REQUEST_BODY_SIZE }));
 const sessionManager = new SessionManager();
 const wizardService = new WizardService(apiKey, model);
 const socketController = new SocketController(io, sessionManager, wizardService);
-
-// API routes
-app.use('/api', createApiRoutes(sessionManager, wizardService));
 
 // Health check
 app.get('/health', (req, res) => {

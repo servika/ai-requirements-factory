@@ -109,23 +109,18 @@ Frontend will run on http://localhost:3001
 
 ### Backend Features
 
-- **RESTful API**: Standard HTTP endpoints for session management
-- **WebSocket Support**: Real-time communication with frontend
+- **WebSocket API**: Real-time communication with the frontend (Socket.IO)
 - **Session Management**: In-memory session storage (can be replaced with database)
 - **Error Handling**: Comprehensive error handling and logging
 - **CORS Support**: Configured for local development
 
 ## API Endpoints
 
-### REST API
+### HTTP
 
 - `GET /health` - Health check
-- `GET /api/sessions` - Get all sessions
-- `GET /api/sessions/:id` - Get session details
-- `POST /api/sessions` - Create new session
-- `GET /api/sessions/:id/steps/:index` - Get step output
-- `GET /api/sessions/:id/download` - Download complete documentation
-- `DELETE /api/sessions/:id` - Delete session
+
+All wizard interaction happens over Socket.IO; there is no REST API.
 
 ### WebSocket Events
 
@@ -165,7 +160,6 @@ AI-factory/
 ├── backend/                      Express API server
 │   ├── src/
 │   │   ├── controllers/         Socket controllers
-│   │   ├── routes/              REST API routes
 │   │   ├── services/            Business logic
 │   │   │   ├── wizard-service.js    Wizard execution
 │   │   │   └── session-manager.js   Session management

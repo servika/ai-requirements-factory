@@ -100,14 +100,11 @@ A complete React frontend with Material UI has been successfully implemented for
 
 ### Backend Features
 
-#### 1. API Routes (`/api`)
+#### 1. HTTP Routes
 - `GET /health` - Health check
-- `GET /api/sessions` - List all sessions
-- `GET /api/sessions/:id` - Get session details
-- `POST /api/sessions` - Create session
-- `GET /api/sessions/:id/steps/:index` - Get step output
-- `GET /api/sessions/:id/download` - Download documentation
-- `DELETE /api/sessions/:id` - Delete session
+
+All wizard interaction happens over Socket.IO (see below); the client does
+not use a REST API.
 
 #### 2. WebSocket Events
 **Client → Server:**
@@ -170,9 +167,7 @@ AI-factory/
 │   │   │   ├── WizardPage.jsx            # Main wizard
 │   │   │   └── HistoryPage.jsx           # Event history
 │   │   ├── context/
-│   │   │   └── WizardContext.jsx         # Global state
-│   │   ├── services/
-│   │   │   └── api.js                    # API client
+│   │   │   └── WizardContext.jsx         # Global state + Socket.IO client
 │   │   ├── theme/
 │   │   │   └── theme.js                  # MUI theme
 │   │   ├── App.jsx                       # Root component
@@ -184,8 +179,6 @@ AI-factory/
 │   ├── src/
 │   │   ├── controllers/
 │   │   │   └── socket-controller.js      # WebSocket logic
-│   │   ├── routes/
-│   │   │   └── api-routes.js             # REST endpoints
 │   │   ├── services/
 │   │   │   ├── wizard-service.js         # Agent execution
 │   │   │   └── session-manager.js        # Session storage

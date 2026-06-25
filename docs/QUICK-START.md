@@ -31,14 +31,17 @@ Get up and running with AI Factory in 5 minutes.
 
    **C. Pass as argument**
    ```bash
-   npm start sk-ant-...
+   npm run cli sk-ant-...
    ```
 
 ## Run (1 minute)
 
 ```bash
-npm start
+npm run cli
 ```
+
+> `npm run cli` launches the interactive terminal wizard. To run the web app
+> instead, use `npm run dev` (see [WEB-APP-SETUP.md](WEB-APP-SETUP.md)).
 
 ## Use (5-15 minutes)
 
@@ -63,7 +66,7 @@ npm start
 ## Example Session
 
 ```bash
-$ npm start
+$ npm run cli
 
 # Follow the prompts:
 System Description: A recipe sharing platform...
@@ -71,8 +74,7 @@ System Description: A recipe sharing platform...
 # Stage 1: Review requirements
 Your choice (1/2/3): 1
 
-# Stage 2: Review requirements review
-Your choice (1/2/3): 1
+# Stage 2: Requirements review runs automatically (no prompt)
 
 # Stage 3: Review architecture
 Your choice (1/2/3): 1
@@ -81,6 +83,15 @@ Your choice (1/2/3): 1
 Your choice (1/2/3): 1
 
 # Stage 5: Review testing strategy
+Your choice (1/2/3): 1
+
+# Stage 6: Review task plan
+Your choice (1/2/3): 1
+
+# Stage 7: Review SDLC task allocation
+Your choice (1/2/3): 1
+
+# Stage 8: Review AI agent tasks
 Your choice (1/2/3): 1
 
 # Done! Check output/ directory
@@ -95,6 +106,9 @@ After completion, find these in `output/`:
 - `3-technicalArchitect.md` - System architecture
 - `4-technicalDesigner.md` - Technical design details
 - `5-testingStrategist.md` - Testing strategy
+- `6-taskPlanner.md` - Task breakdown and roadmap
+- `7-sdlcTaskAllocator.md` - Role-based task allocation
+- `8-agentTaskGenerator.md` - AI agent work packages
 - `COMPLETE-DOCUMENTATION.md` - Everything combined
 
 ## Tips
@@ -121,9 +135,9 @@ After completion, find these in `output/`:
 - Check your internet connection
 
 **Want to start over?**
-- Just run `npm start` again
+- Just run `npm run cli` again
 - Previous outputs remain in `output/` directory (timestamped)
 
 ---
 
-**You're ready! Run `npm start` to begin.**
+**You're ready! Run `npm run cli` to begin.**

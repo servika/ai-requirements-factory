@@ -335,14 +335,31 @@ requirements like mobile, real-time, offline, etc.].
 - Tool recommendations
 - Performance benchmarks
 
-**Total Time**: 10-20 minutes depending on system complexity and iterations
+### Stage 6: Task Planner (2-4 minutes)
+- Work Breakdown Structure (WBS)
+- Critical path and dependency graph
+- MVP scope definition
+- Story point estimates per task
+
+### Stage 7: SDLC Task Allocator (2-3 minutes)
+- Role-based task distribution across 9 SDLC roles
+- RACI matrix
+- Handoff protocols and validation gates
+- Parallel workstreams
+
+### Stage 8: Agent Task Generator (2-4 minutes)
+- AI-ready, executable work packages
+- Optimized prompts for coding assistants
+- Verification checklists and human review gates
+
+**Total Time**: 15-30 minutes depending on system complexity and iterations
 
 ---
 
 ## Sample Interaction Flow
 
 ```
-$ npm start
+$ npm run cli
 
 ╔════════════════════════════════════════════════════════════════════════════╗
 ║             AI Agent Wizard - Software Development Lifecycle               ║
@@ -354,13 +371,16 @@ This wizard will guide you through:
   3. Technical Architecture & Stack (Technical Architect)
   4. Technical Design & API Specs (Technical Designer)
   5. Testing Strategy (Testing Strategist)
+  6. Task Planner & Implementation Roadmap (Task Planner)
+  7. SDLC Task Allocation (SDLC Task Allocator)
+  8. Agent Task Generation (Agent Task Generator)
 
 Please provide a high-level description of the system you want to build:
 
 System Description: A recipe sharing platform where users can post recipes...
 
 ────────────────────────────────────────────────────────────────────────────
-  Step 1/5: Requirements & User Stories
+  Step 1/8: Requirements & User Stories
 ────────────────────────────────────────────────────────────────────────────
 
 ✔ Business Analyst & Requirements Manager completed
@@ -384,7 +404,7 @@ Options:
 
 Your choice (1/2/3): 1
 
-[Continues through all 5 stages...]
+[Continues through all 8 stages...]
 
 ╔════════════════════════════════════════════════════════════════════════════╗
 ║                     Wizard Completed Successfully!                         ║

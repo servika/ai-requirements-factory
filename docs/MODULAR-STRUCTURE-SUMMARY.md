@@ -20,11 +20,15 @@ src/
 │   └── index.js                    # Exports
 │
 ├── prompts/                        # Prompt definitions (separated)
-│   ├── business-analyst.js         # 47 lines
-│   ├── requirements-reviewer.js    # 50 lines
-│   ├── technical-architect.js      # 73 lines
-│   ├── technical-designer.js       # 107 lines
-│   ├── testing-strategist.js       # 148 lines
+│   ├── _shared.js                  # 26 lines - shared output quality standards
+│   ├── 01-business-analyst.js      # 532 lines
+│   ├── 02-requirements-reviewer.js # 491 lines
+│   ├── 03-technical-architect.js   # 627 lines
+│   ├── 04-technical-designer.js    # 979 lines
+│   ├── 05-testing-strategist.js    # 836 lines
+│   ├── 06-task-planner.js          # 771 lines
+│   ├── 07-sdlc-task-allocator.js   # 795 lines
+│   ├── 08-agent-task-generator.js  # 1094 lines
 │   └── index.js                    # Exports
 │
 ├── orchestration/                  # Workflow management
@@ -105,31 +109,37 @@ src/
 
 ## Module Responsibilities
 
+> Note: this document describes the original modularization. The system has
+> since grown to **8 specialized agents** with a shared output-quality standards
+> module (`prompts/_shared.js`); line counts below reflect the current code.
+
 | Module | Responsibility | Lines of Code |
 |--------|---------------|---------------|
-| `agents/` | Claude API communication | ~70 |
-| `prompts/` | Agent behavior definitions | ~450 |
-| `orchestration/` | Workflow management | ~200 |
-| `config/` | Configuration & environment | ~100 |
-| `utils/` | Reusable utilities | ~235 |
-| **Total** | | **~1,055** |
+| `agents/` | Claude API communication | ~160 |
+| `prompts/` | Agent behavior definitions (8 agents + shared standards) | ~6,180 |
+| `orchestration/` | Workflow management | ~365 |
+| `config/` | Configuration & environment | ~225 |
+| `utils/` | Reusable utilities | ~260 |
+| **Total** | | **~7,210** |
 
 ## How to Use
 
 ### Adding a New Agent
 
-1. **Create prompt file**: `src/prompts/security-specialist.js`
+1. **Create prompt file** (numbered convention): `src/prompts/09-security-specialist.js`
 ```javascript
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const securitySpecialistPrompt = {
   name: 'Security Specialist',
-  systemPrompt: 'You are an expert security specialist...',
-  getUserPrompt: (input, feedback) => '...'
+  systemPrompt: `You are an expert security specialist...` + OUTPUT_QUALITY_STANDARDS,
+  getUserPrompt: (input, feedback = null) => '...'
 };
 ```
 
 2. **Export from index**: `src/prompts/index.js`
 ```javascript
-export { securitySpecialistPrompt } from './security-specialist.js';
+export { securitySpecialistPrompt } from './09-security-specialist.js';
 ```
 
 3. **Add to wizard steps**: `src/orchestration/wizard-steps.js`
@@ -236,7 +246,7 @@ The modular structure makes these enhancements easier:
 ### For Users
 No changes required! The CLI interface remains exactly the same:
 ```bash
-npm start
+npm run cli
 ```
 
 ### For Contributors

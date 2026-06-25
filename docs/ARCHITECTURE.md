@@ -235,6 +235,22 @@ Each prompt follows industry best practices:
 }
 ```
 
+**Shared Output Quality Standards (`src/prompts/_shared.js`):**
+
+Every agent's `systemPrompt` is appended with a shared `OUTPUT_QUALITY_STANDARDS`
+block. The agent templates are enterprise-sized, so these directives keep the
+generated documents grounded and usable regardless of system size:
+
+- Ground all content in the provided input (no contradicting invention)
+- Replace every `[placeholder]` with derived content or a labelled assumption - never emit raw brackets or `TBD`
+- Scale the document to the system instead of padding small systems with empty tables
+- Prefer completeness over volume - finish sections rather than truncating mid-table
+- Reuse exact upstream IDs/terminology for cross-stage traceability
+- Self-check internal consistency before finishing
+
+Applied from a single source of truth so both the CLI and web execution paths
+stay in sync.
+
 ### 4. Agent Executor (`src/agents/base-agent.js`)
 
 **Responsibilities:**

@@ -25,13 +25,17 @@ AI-factory/
     │   ├── index.js                     # Agent exports
     │   └── base-agent.js                # Base agent with Claude API integration
     │
-    ├── prompts/                         # Agent prompt definitions
+    ├── prompts/                         # Agent prompt definitions (8 agents)
     │   ├── index.js                     # Prompt exports
-    │   ├── business-analyst.js          # Business Analyst prompt
-    │   ├── requirements-reviewer.js     # Requirements Reviewer prompt
-    │   ├── technical-architect.js       # Technical Architect prompt
-    │   ├── technical-designer.js        # Technical Designer prompt
-    │   └── testing-strategist.js        # Testing Strategist prompt
+    │   ├── _shared.js                   # Shared output quality standards
+    │   ├── 01-business-analyst.js       # Business Analyst prompt
+    │   ├── 02-requirements-reviewer.js  # Requirements Reviewer prompt
+    │   ├── 03-technical-architect.js    # Technical Architect prompt
+    │   ├── 04-technical-designer.js     # Technical Designer prompt
+    │   ├── 05-testing-strategist.js     # Testing Strategist prompt
+    │   ├── 06-task-planner.js           # Task Planner prompt
+    │   ├── 07-sdlc-task-allocator.js    # SDLC Task Allocator prompt
+    │   └── 08-agent-task-generator.js   # Agent Task Generator prompt
     │
     ├── orchestration/                   # Wizard orchestration logic
     │   ├── index.js                     # Orchestration exports
@@ -82,28 +86,44 @@ Contains prompt definitions for each specialized agent.
 
 Each prompt file exports an object with:
 - `name`: Agent display name
-- `systemPrompt`: Role and behavior definition
+- `systemPrompt`: Role and behavior definition (with shared quality standards appended)
 - `getUserPrompt(input, feedback)`: Contextual prompt generator
 
-**business-analyst.js**
+**_shared.js**
+- Exports `OUTPUT_QUALITY_STANDARDS`, appended to every agent's `systemPrompt`
+- Enforces grounding, no placeholders, scaling to system size, completeness, and traceability
+
+**01-business-analyst.js**
 - Creates user stories and requirements
 - Focus on stakeholder needs and acceptance criteria
 
-**requirements-reviewer.js**
+**02-requirements-reviewer.js**
 - Reviews and validates requirements
 - Identifies gaps and missing elements
 
-**technical-architect.js**
+**03-technical-architect.js**
 - Designs system architecture
 - Recommends technology stack
 
-**technical-designer.js**
+**04-technical-designer.js**
 - Creates detailed component design
 - Defines API specifications and data models
 
-**testing-strategist.js**
+**05-testing-strategist.js**
 - Develops comprehensive testing strategy
 - Covers unit, integration, E2E, and performance testing
+
+**06-task-planner.js**
+- Builds the Work Breakdown Structure and implementation roadmap
+- Critical path analysis and MVP scoping
+
+**07-sdlc-task-allocator.js**
+- Allocates tasks across SDLC roles with a RACI matrix
+- Defines handoff protocols and parallel workstreams
+
+**08-agent-task-generator.js**
+- Produces executable, AI-ready work packages
+- Optimized prompts with verification gates
 
 ### src/orchestration/
 
@@ -264,18 +284,20 @@ Modular structure enables:
 
 ### Adding a New Agent
 
-1. **Create prompt file**: `src/prompts/new-agent.js`
+1. **Create prompt file** using the numbered convention: `src/prompts/09-new-agent.js`
 ```javascript
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const newAgentPrompt = {
   name: 'New Agent Name',
-  systemPrompt: '...',
-  getUserPrompt: (input, feedback) => '...'
+  systemPrompt: `...role and methodology...` + OUTPUT_QUALITY_STANDARDS,
+  getUserPrompt: (input, feedback = null) => '...'
 };
 ```
 
 2. **Export from index**: `src/prompts/index.js`
 ```javascript
-import { newAgentPrompt } from './new-agent.js';
+import { newAgentPrompt } from './09-new-agent.js';
 export const AGENT_PROMPTS = {
   // ... existing
   newAgent: newAgentPrompt

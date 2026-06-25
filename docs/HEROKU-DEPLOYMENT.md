@@ -61,8 +61,8 @@ Configure your Anthropic API key and other environment variables:
 # Required: Set your Anthropic API key
 heroku config:set ANTHROPIC_API_KEY=your_api_key_here
 
-# Optional: Set the Claude model (defaults to claude-sonnet-4-5-20250929)
-heroku config:set CLAUDE_MODEL=claude-sonnet-4-5-20250929
+# Optional: Set the Claude model (defaults to claude-sonnet-4-6)
+heroku config:set CLAUDE_MODEL=claude-sonnet-4-6
 
 # Required: Set Node environment to production
 heroku config:set NODE_ENV=production
@@ -272,7 +272,7 @@ heroku addons:create heroku-redis:mini
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `ANTHROPIC_API_KEY` | Yes | - | Your Anthropic API key |
-| `CLAUDE_MODEL` | No | claude-sonnet-4-5-20250929 | Claude model to use |
+| `CLAUDE_MODEL` | No | claude-sonnet-4-6 | Claude model to use |
 | `NODE_ENV` | Yes | - | Set to `production` |
 | `PORT` | No | (Set by Heroku) | Server port |
 | `FRONTEND_URL` | No | App URL | Frontend URL for CORS |

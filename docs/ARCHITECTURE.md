@@ -50,7 +50,7 @@ AI Factory is a multi-agent orchestration system that guides users through the S
 │  - SDLC Task Allocator    │                           ▼
 │  - Agent Task Generator   │         ┌───────────────────────────────────────┐
 └───────────────────────────┘         │       Anthropic Claude API            │
-                                      │    (claude-sonnet-4-5-20250929)       │
+                                      │       (claude-sonnet-4-6)             │
                                       └───────────────────────────────────────┘
 ```
 

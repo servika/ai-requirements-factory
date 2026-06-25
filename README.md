@@ -291,7 +291,7 @@ User Input: "Build a task management app..."
                            ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  Stage 8: Agent Task Generator                               │
-│  Input: Architecture + Design + Allocation                  │
+│  Input: SDLC Task Allocation (carries all prior context)    │
 │  → AI Prompts, Verification Checklists, Review Gates        │
 └──────────────────────────┬──────────────────────────────────┘
                            │
@@ -304,7 +304,7 @@ User Input: "Build a task management app..."
 ### Environment Variables
 
 - `ANTHROPIC_API_KEY`: Your Anthropic API key (required)
-- `CLAUDE_MODEL`: Claude model to use (default: `claude-sonnet-4-5-20250929`)
+- `CLAUDE_MODEL`: Claude model to use (default: `claude-sonnet-4-6`)
 - `PORT`: Backend server port (default: `3000`)
 - `NODE_ENV`: Environment mode (default: `development`)
 - `FRONTEND_URL`: Frontend URL for CORS (default: `http://localhost:3001`)
@@ -328,7 +328,7 @@ Agent prompts are in `src/prompts/`. Each prompt has:
 ### Adjusting Model Parameters
 
 In `src/config/constants.js`:
-- `MAX_TOKENS`: Response length (SIMPLE: 4096, COMPLEX: 8192, EXTENDED: 16384)
+- `MAX_TOKENS`: Response length (SIMPLE: 16000, COMPLEX: 32000, EXTENDED: 64000)
 - `DEFAULT_MODEL`: Claude model to use
 
 ## Project Structure
@@ -374,11 +374,11 @@ AI-factory/
 │       ├── pages/                       # Page components
 │       └── context/                     # React Context (state)
 │
-├── backend/                              # Express API server
+├── backend/                              # Express + Socket.IO server
 │   └── src/
-│       ├── controllers/                 # Socket controllers
-│       ├── routes/                      # REST API routes
-│       └── services/                    # Business logic
+│       ├── controllers/                 # Socket.IO event controllers
+│       ├── services/                    # Session + wizard business logic
+│       └── server.js                    # Server setup, /health, static serving
 │
 ├── test/                                 # Unit tests
 │   ├── wizard-steps.test.js             # Step configuration tests
@@ -403,7 +403,7 @@ AI-factory/
 
 ### AI Model
 
-The wizard uses Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) by default, providing:
+The wizard uses Claude Sonnet 4.6 (claude-sonnet-4-6) by default, providing:
 - Excellent reasoning and analysis capabilities
 - Strong technical knowledge
 - Consistent formatting and structure

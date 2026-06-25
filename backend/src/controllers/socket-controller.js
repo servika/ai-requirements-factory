@@ -1,4 +1,8 @@
-import { sanitizeError } from '../../../src/config/constants.js';
+import {
+  sanitizeError,
+  validateSystemDescription,
+  validateFeedback,
+} from '../../../src/config/constants.js';
 
 /**
  * Socket.IO event handlers
@@ -19,7 +23,13 @@ export class SocketController {
     // Start wizard
     socket.on('wizard:start', async ({ systemDescription }) => {
       try {
-        const session = this.sessionManager.createSession(systemDescription);
+        const { valid, value, error } = validateSystemDescription(systemDescription);
+        if (!valid) {
+          socket.emit('error', { type: 'ValidationError', message: error });
+          return;
+        }
+
+        const session = this.sessionManager.createSession(value);
         socket.join(session.id);
         socket.data.sessionId = session.id;
 
@@ -40,7 +50,12 @@ export class SocketController {
 
     // Execute step
     socket.on('step:execute', async ({ stepIndex, feedback }) => {
-      await this.executeStep(socket, stepIndex, feedback);
+      const { valid, value, error } = validateFeedback(feedback);
+      if (!valid) {
+        socket.emit('step:error', { step: stepIndex, type: 'ValidationError', error });
+        return;
+      }
+      await this.executeStep(socket, stepIndex, value);
     });
 
     // Accept step
@@ -81,8 +96,19 @@ export class SocketController {
 
     // Request revision
     socket.on('step:revise', async ({ stepIndex, feedback }) => {
+      const validation = validateFeedback(feedback);
+      if (!validation.valid) {
+        socket.emit('step:error', {
+          step: stepIndex,
+          type: 'ValidationError',
+          error: validation.error,
+        });
+        return;
+      }
+      feedback = validation.value;
+
       console.log(`\n🔄 Revision requested for Step ${stepIndex + 1}`);
-      console.log(`   Feedback: ${feedback.substring(0, 100)}...`);
+      console.log(`   Feedback: ${(feedback || '').substring(0, 100)}...`);
 
       // For Requirements Reviewer (step 1), apply feedback to Business Analyst (step 0)
       if (stepIndex === 1) {

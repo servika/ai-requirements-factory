@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Environment } from '../../src/config/environment.js';
+import { CONFIG, sanitizeError } from '../../src/config/constants.js';
 import { WizardService } from './services/wizard-service.js';
 import { SessionManager } from './services/session-manager.js';
 import { SocketController } from './controllers/socket-controller.js';
@@ -47,7 +48,7 @@ app.use(cors({
   origin: FRONTEND_URL,
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: CONFIG.INPUT.MAX_REQUEST_BODY_SIZE }));
 
 // Initialize services
 const sessionManager = new SessionManager();
@@ -83,11 +84,27 @@ io.on('connection', (socket) => {
 });
 
 // Error handling middleware
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({
-    error: 'Internal server error',
-    message: err.message,
+  // Log full details server-side for debugging
+  console.error('Error:', err.message);
+  if (process.env.NODE_ENV !== 'production') {
+    console.error('Stack trace:', err.stack);
+  }
+
+  // Payload too large (from express.json limit)
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ error: 'Request payload too large' });
+  }
+
+  // Malformed JSON body
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'Invalid JSON in request body' });
+  }
+
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({
+    error: sanitizeError(err, 'Internal server error'),
   });
 });
 
@@ -102,6 +119,7 @@ httpServer.listen(PORT, () => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, closing server...');
+  sessionManager.stopCleanup();
   httpServer.close(() => {
     console.log('Server closed');
     process.exit(0);

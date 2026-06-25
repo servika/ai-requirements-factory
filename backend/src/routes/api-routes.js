@@ -1,4 +1,5 @@
 import express from 'express';
+import { validateSystemDescription } from '../../../src/config/constants.js';
 
 export function createApiRoutes(sessionManager, wizardService) {
   const router = express.Router();
@@ -29,12 +30,12 @@ export function createApiRoutes(sessionManager, wizardService) {
   // Create session
   router.post('/sessions', (req, res) => {
     try {
-      const { systemDescription } = req.body;
-      if (!systemDescription) {
-        return res.status(400).json({ error: 'System description is required' });
+      const { valid, value, error } = validateSystemDescription(req.body?.systemDescription);
+      if (!valid) {
+        return res.status(400).json({ error });
       }
 
-      const session = sessionManager.createSession(systemDescription);
+      const session = sessionManager.createSession(value);
       res.status(201).json({ session });
     } catch (error) {
       res.status(500).json({ error: error.message });

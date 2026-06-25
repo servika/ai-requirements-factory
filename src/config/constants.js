@@ -21,6 +21,28 @@ export const CONFIG = {
     RETRYABLE_ERROR_MESSAGES: ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'ECONNREFUSED']
   },
 
+  // Input validation limits
+  INPUT: {
+    // Max length (characters) for a system description
+    MAX_SYSTEM_DESCRIPTION_LENGTH: 20000,
+    // Minimum length to be considered meaningful
+    MIN_SYSTEM_DESCRIPTION_LENGTH: 10,
+    // Max length (characters) for revision feedback
+    MAX_FEEDBACK_LENGTH: 10000,
+    // Max accepted JSON request body size
+    MAX_REQUEST_BODY_SIZE: '100kb',
+  },
+
+  // Session management
+  SESSION: {
+    // Time-to-live for an idle session before eviction (ms)
+    TTL_MS: 24 * 60 * 60 * 1000, // 24 hours
+    // How often to sweep for expired sessions (ms)
+    CLEANUP_INTERVAL_MS: 60 * 60 * 1000, // 1 hour
+    // Hard cap on concurrent sessions kept in memory
+    MAX_SESSIONS: 500,
+  },
+
   // Output configuration
   OUTPUT_DIR: 'output',
   COMPLETE_DOC_FILENAME: 'COMPLETE-DOCUMENTATION.md',
@@ -56,6 +78,59 @@ export const COLORS = {
   INFO: 'blue',
   MUTED: 'gray'
 };
+
+/**
+ * Validate a user-supplied system description.
+ * @param {unknown} value - The raw input to validate
+ * @returns {{ valid: boolean, value?: string, error?: string }} Validation result with trimmed value
+ */
+export function validateSystemDescription(value) {
+  if (typeof value !== 'string') {
+    return { valid: false, error: 'System description is required' };
+  }
+
+  const trimmed = value.trim();
+
+  if (trimmed.length < CONFIG.INPUT.MIN_SYSTEM_DESCRIPTION_LENGTH) {
+    return {
+      valid: false,
+      error: `System description must be at least ${CONFIG.INPUT.MIN_SYSTEM_DESCRIPTION_LENGTH} characters`,
+    };
+  }
+
+  if (trimmed.length > CONFIG.INPUT.MAX_SYSTEM_DESCRIPTION_LENGTH) {
+    return {
+      valid: false,
+      error: `System description must not exceed ${CONFIG.INPUT.MAX_SYSTEM_DESCRIPTION_LENGTH} characters`,
+    };
+  }
+
+  return { valid: true, value: trimmed };
+}
+
+/**
+ * Validate optional revision feedback.
+ * @param {unknown} value - The raw feedback to validate (may be null/undefined)
+ * @returns {{ valid: boolean, value?: string|null, error?: string }} Validation result
+ */
+export function validateFeedback(value) {
+  if (value === null || value === undefined) {
+    return { valid: true, value: null };
+  }
+
+  if (typeof value !== 'string') {
+    return { valid: false, error: 'Feedback must be a string' };
+  }
+
+  if (value.length > CONFIG.INPUT.MAX_FEEDBACK_LENGTH) {
+    return {
+      valid: false,
+      error: `Feedback must not exceed ${CONFIG.INPUT.MAX_FEEDBACK_LENGTH} characters`,
+    };
+  }
+
+  return { valid: true, value };
+}
 
 /**
  * Sanitize error messages for production

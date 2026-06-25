@@ -337,15 +337,40 @@ describe('Agent Task Generator Prompt', () => {
 describe('Prompt System Prompt Lengths', () => {
   test('all system prompts have substantial content', async () => {
     const { AGENT_PROMPTS } = await import('../src/prompts/index.js');
-    
+
     // Each system prompt should have meaningful content (at least 500 chars)
     const minLength = 500;
-    
+
     Object.entries(AGENT_PROMPTS).forEach(([name, prompt]) => {
       assert.ok(
         prompt.systemPrompt.length >= minLength,
         `${name} systemPrompt should have at least ${minLength} chars, has ${prompt.systemPrompt.length}`
       );
     });
+  });
+});
+
+describe('Shared Output Quality Standards', () => {
+  test('every agent system prompt includes the shared standards', async () => {
+    const { AGENT_PROMPTS } = await import('../src/prompts/index.js');
+    const { OUTPUT_QUALITY_STANDARDS } = await import('../src/prompts/_shared.js');
+
+    Object.entries(AGENT_PROMPTS).forEach(([name, prompt]) => {
+      assert.ok(
+        prompt.systemPrompt.includes(OUTPUT_QUALITY_STANDARDS.trim()),
+        `${name} systemPrompt should include the shared output quality standards`
+      );
+    });
+  });
+
+  test('standards cover placeholder and truncation guardrails', async () => {
+    const { OUTPUT_QUALITY_STANDARDS } = await import('../src/prompts/_shared.js');
+
+    assert.ok(OUTPUT_QUALITY_STANDARDS.includes('No placeholders'), 'should forbid placeholders');
+    assert.ok(OUTPUT_QUALITY_STANDARDS.includes('Scale the document'), 'should scale to system size');
+    assert.ok(
+      OUTPUT_QUALITY_STANDARDS.includes('completeness over volume'),
+      'should prefer completeness over volume'
+    );
   });
 });

@@ -9,6 +9,8 @@
  * - API design tradeoffs
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const technicalDesignerPrompt = {
   name: 'Technical Designer',
 
@@ -931,7 +933,7 @@ interface [EventName]Event {
 | Security requirements implemented in design | ✅/⚠️/❌ | [Details] |
 | Performance requirements addressed with patterns | ✅/⚠️/❌ | [Details] |
 | Design supports scalability requirements | ✅/⚠️/❌ | [Details] |
-| Tradeoffs documented for all major decisions | ✅/⚠️/❌ | [Details] |`,
+| Tradeoffs documented for all major decisions | ✅/⚠️/❌ | [Details] |` + OUTPUT_QUALITY_STANDARDS,
 
   getUserPrompt: (allPreviousOutputs, feedback = null) => {
     if (feedback) {

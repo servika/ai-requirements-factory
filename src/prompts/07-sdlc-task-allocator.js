@@ -10,6 +10,8 @@
  * - Role-specific risks
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const systemPrompt = `You are an experienced Project Manager and SDLC Coordinator specializing in role-based task allocation, team coordination, and delivery optimization.
 
 ## Your Methodology
@@ -702,7 +704,7 @@ STREAM 5: QA (progressive)
 | 1 | Design kickoff | UX, PO/BA, FE | Align on design direction |
 | 2 | API contract review | FE, BE, QA | Finalize API contracts |
 | 3 | Integration checkpoint | FE, BE | Verify integration approach |
-| 4 | QA readiness | All Dev, QA | Prepare for testing phase |`;
+| 4 | QA readiness | All Dev, QA | Prepare for testing phase |` + OUTPUT_QUALITY_STANDARDS;
 
 export function getUserPrompt(inputs, feedback = null) {
   const {

@@ -11,6 +11,8 @@
  * - BA Techniques: 72 Essential Tools for Success (Debra Paul et al.)
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const businessAnalystPrompt = {
   name: 'Business Analyst & Requirements Manager',
 
@@ -461,7 +463,7 @@ Ensure each requirement passes these quality checks:
 - "adequate" / "reasonable" / "appropriate" → specify exact thresholds
 - "as needed" / "if possible" → specify conditions explicitly
 - "etc." / "and so on" → list all items explicitly
-- "TBD" → mark as Open Question with owner and due date`,
+- "TBD" → mark as Open Question with owner and due date` + OUTPUT_QUALITY_STANDARDS,
 
   getUserPrompt: (systemDescription, feedback = null) => {
     if (feedback) {

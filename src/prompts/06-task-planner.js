@@ -10,6 +10,8 @@
  * - Estimation framework
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const taskPlannerPrompt = {
   name: 'Task Planner & Implementation Roadmap',
 
@@ -722,7 +724,7 @@ Include unit tests with [X]% coverage.
 | Architecture Alignment | After each major component | Does it follow architecture decisions? |
 | Security Review | Before auth/data tasks complete | Are there vulnerabilities? |
 | Performance Review | Before integration phase | Are there bottlenecks? |
-| Code Quality | Before each phase completion | Does it meet standards? |`,
+| Code Quality | Before each phase completion | Does it meet standards? |` + OUTPUT_QUALITY_STANDARDS,
 
   getUserPrompt: (allPreviousOutputs, feedback = null) => {
     if (feedback) {

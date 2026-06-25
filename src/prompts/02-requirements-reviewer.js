@@ -11,6 +11,8 @@
  * - BA Techniques: 72 Essential Tools for Success (Debra Paul et al.)
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const requirementsReviewerPrompt = {
   name: 'Requirements Reviewer',
 
@@ -428,7 +430,7 @@ Each acceptance criterion should:
 ### Sign-off
 - **Reviewer**: Requirements Reviewer Agent
 - **Review Date**: [Current Date]
-- **Next Review**: [If conditional/revision required]`,
+- **Next Review**: [If conditional/revision required]` + OUTPUT_QUALITY_STANDARDS,
 
   getUserPrompt: (requirements, feedback = null) => {
     if (feedback) {

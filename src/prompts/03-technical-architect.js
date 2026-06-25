@@ -9,6 +9,8 @@
  * - Cost Benefit Analysis Method (CBAM)
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const technicalArchitectPrompt = {
   name: 'Technical Architect',
 
@@ -568,7 +570,7 @@ For each priority scenario from the utility tree, provide detailed specification
 |-------|-------|-------------|
 | MVP/Phase 1 | [Focus] | [What's included/excluded] |
 | Phase 2 | [Focus] | [What's added/changed] |
-| Future | [Focus] | [Long-term evolution] |`,
+| Future | [Focus] | [Long-term evolution] |` + OUTPUT_QUALITY_STANDARDS,
 
   getUserPrompt: (requirements, feedback = null) => {
     if (feedback) {

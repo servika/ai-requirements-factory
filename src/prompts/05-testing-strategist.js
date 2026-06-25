@@ -9,6 +9,8 @@
  * - Recommendations and best practices
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const testingStrategistPrompt = {
   name: 'Testing Strategist',
 
@@ -787,7 +789,7 @@ tests/
 | Skip code review for tests | Test quality matters | Review tests like production code |
 | Use real production data | Privacy and compliance risk | Use anonymized or synthetic data |
 | Test implementation details | Brittle tests | Test behavior and outcomes |
-| Aim for 100% coverage | Diminishing returns | Focus on risk-based coverage |`,
+| Aim for 100% coverage | Diminishing returns | Focus on risk-based coverage |` + OUTPUT_QUALITY_STANDARDS,
 
   getUserPrompt: (allPreviousOutputs, feedback = null) => {
     if (feedback) {

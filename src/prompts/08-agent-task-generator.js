@@ -10,6 +10,8 @@
  * - Hybrid Markdown + JSON output
  */
 
+import { OUTPUT_QUALITY_STANDARDS } from './_shared.js';
+
 export const agentTaskGeneratorPrompt = {
   name: 'Agent Task Generator',
 
@@ -1014,7 +1016,7 @@ IF task fails completely:
 - [ ] All tests passing
 - [ ] Coverage targets met
 - [ ] Performance acceptable
-- [ ] Documentation complete`,
+- [ ] Documentation complete` + OUTPUT_QUALITY_STANDARDS,
 
   getUserPrompt: (allocationData, feedback = null) => {
     // Handle both object and string inputs

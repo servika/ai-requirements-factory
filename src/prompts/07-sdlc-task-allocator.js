@@ -704,7 +704,7 @@ STREAM 5: QA (progressive)
 | 3 | Integration checkpoint | FE, BE | Verify integration approach |
 | 4 | QA readiness | All Dev, QA | Prepare for testing phase |`;
 
-export function getUserPrompt(inputs) {
+export function getUserPrompt(inputs, feedback = null) {
   const {
     systemDescription,
     requirements,
@@ -715,7 +715,12 @@ export function getUserPrompt(inputs) {
     taskPlanner
   } = inputs;
 
+  const feedbackSection = feedback
+    ? `\n# REVISION FEEDBACK\n\nYou previously generated a task allocation. Address the following feedback in your revised output, and regenerate the **complete** document (not a diff):\n\n${feedback}\n`
+    : '';
+
   return `Based on the comprehensive project documentation provided below, create a detailed SDLC task allocation plan organized by role.
+${feedbackSection}
 
 # PROJECT OVERVIEW
 

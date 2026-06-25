@@ -942,6 +942,7 @@ When revising:
 2. Ensure changes align with architectural decisions
 3. Update any impacted API contracts or data models
 4. Document new design decisions with rationale
+5. Output the **complete** updated design document following your system-prompt format - not a diff or summary of changes
 
 All Previous Context:
 ${allPreviousOutputs}`;

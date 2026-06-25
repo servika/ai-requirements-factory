@@ -1016,9 +1016,7 @@ IF task fails completely:
 - [ ] Performance acceptable
 - [ ] Documentation complete`,
 
-  getUserPrompt: (allocationData, context = {}) => {
-    const { feedback } = context;
-
+  getUserPrompt: (allocationData, feedback = null) => {
     // Handle both object and string inputs
     let allocation;
     if (typeof allocationData === 'string') {

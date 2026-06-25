@@ -733,6 +733,7 @@ When revising:
 2. Re-evaluate critical path if dependencies changed
 3. Adjust MVP scope if priorities changed
 4. Update risk register with new risks identified
+5. Output the **complete** updated task breakdown and roadmap following your system-prompt format - not a diff or summary of changes
 
 All Previous Outputs:
 ${allPreviousOutputs}`;

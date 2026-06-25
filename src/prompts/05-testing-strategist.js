@@ -798,6 +798,7 @@ When revising:
 2. Adjust tool recommendations if needed
 3. Update risk assessment if requirements changed
 4. Ensure alignment with architectural decisions
+5. Output the **complete** updated testing strategy following your system-prompt format - not a diff or summary of changes
 
 All Previous Context:
 ${allPreviousOutputs}`;

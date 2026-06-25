@@ -258,10 +258,29 @@ describe('SDLC Task Allocator Prompt', () => {
     };
     
     const prompt = sdlcTaskAllocatorPrompt.getUserPrompt(input);
-    
+
     assert.ok(prompt.includes('Test system'), 'should include system description');
     assert.ok(prompt.includes('Test requirements'), 'should include requirements');
     assert.ok(prompt.includes('Test architecture'), 'should include architecture');
+  });
+
+  test('getUserPrompt injects revision feedback (positional arg)', async () => {
+    const { sdlcTaskAllocatorPrompt } = await import('../src/prompts/07-sdlc-task-allocator.js');
+
+    const input = {
+      systemDescription: 'Test system',
+      requirements: 'Test requirements',
+      requirementsReview: '',
+      architecture: '',
+      technicalDesign: '',
+      testingStrategy: '',
+      taskPlanner: ''
+    };
+
+    // wizard-service calls getUserPrompt(input, feedback) positionally
+    const prompt = sdlcTaskAllocatorPrompt.getUserPrompt(input, 'Rebalance QA workload');
+
+    assert.ok(prompt.includes('Rebalance QA workload'), 'should include the feedback text');
   });
 });
 
@@ -298,9 +317,20 @@ describe('Agent Task Generator Prompt', () => {
     
     const input = 'SDLC allocation content here';
     const prompt = agentTaskGeneratorPrompt.getUserPrompt(input);
-    
-    assert.ok(prompt.includes('allocation') || prompt.includes('SDLC'), 
+
+    assert.ok(prompt.includes('allocation') || prompt.includes('SDLC'),
       'should process string input');
+  });
+
+  test('getUserPrompt injects revision feedback (positional string arg)', async () => {
+    const { agentTaskGeneratorPrompt } = await import('../src/prompts/08-agent-task-generator.js');
+
+    const input = 'SDLC allocation content here';
+    // wizard-service passes feedback as a positional string, not a context object
+    const prompt = agentTaskGeneratorPrompt.getUserPrompt(input, 'Split BE-001 into two tasks');
+
+    assert.ok(prompt.includes('Split BE-001 into two tasks'), 'should include the feedback text');
+    assert.ok(prompt.includes('Revision Feedback'), 'should render the revision feedback section');
   });
 });
 
